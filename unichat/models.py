@@ -1,11 +1,31 @@
-MODELS_LIST = {
-    "anthropic_models": ["claude-3-5-haiku-latest", "claude-3-5-sonnet-latest", "claude-3-opus-latest"],
-    "mistral_models": ["mistral-small-latest", "mistral-large-latest"],
-    "openai_models": ["gpt-3.5-turbo", "gpt-4o-mini", "gpt-4o", "o1-mini", "o1-preview"],
-    "grok_models": ["grok-beta"],
-    "gemini_models": ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-exp-1121"],
+MODELS_LIST =  {
+    "anthropic_models": [
+        "claude-3-5-haiku-latest",
+        "claude-3-5-sonnet-latest",
+        "claude-3-opus-latest"
+    ],
+    "mistral_models": [
+        "mistral-small-latest",
+        "mistral-large-latest"
+    ],
+    "openai_models": [
+        "gpt-3.5-turbo",
+        "gpt-4o-mini",
+        "gpt-4o",
+        "o1-mini",
+        "o1-preview"
+    ],
+    "grok_models": [
+        "grok-beta"
+    ],
+    "gemini_models": [
+        "gemini-1.5-flash",
+        "gemini-1.5-pro",
+        "gemini-exp-1121",
+        "gemini-1.5-pro-002"
+    ]
 }
-MODELS_MAX_TOKEN = {
+MODELS_MAX_TOKEN =  {
     "gpt-3.5-turbo": "4096",
     "gpt-4o-mini": "16384",
     "gpt-4o": "16384",
@@ -20,4 +40,5 @@ MODELS_MAX_TOKEN = {
     "gemini-1.5-flash": "8192",
     "gemini-1.5-pro": "8192",
     "gemini-exp-1121": "8192",
+    "gemini-1.5-pro-002": "8192"
 }
