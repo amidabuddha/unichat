@@ -1,4 +1,4 @@
-# llm-unichat
+# unichat
 Universal Python API client for OpenAI, MistralAI, Anthropic, xAI, and Google AI.
 
 ## Build sequence:
@@ -17,7 +17,7 @@ twine upload dist/*
 1. Install the pip package:
 
 ```shell
-pip install llm-unichat
+pip install unichat
 ```
 
 2. Add the class 'UnifiedChatApi' from module 'unichat' to your application:
