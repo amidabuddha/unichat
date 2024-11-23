@@ -1,0 +1,11 @@
+.idea
+test*
+*.log
+*.json
+*.txt
+!requirements.txt
+__pycache__/                                                   
+*.py[cod]                                                      
+*.egg-info/                                                    
+dist/                                                          
+build/ 
