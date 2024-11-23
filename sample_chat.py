@@ -1,11 +1,12 @@
 import sys
 
-from unichat import UnifiedChatApi, MODELS_LIST
+# from unichat import UnifiedChatApi, MODELS_LIST
+import unichat
 
 def validate_inputs(api_key: str, model_name: str) -> None:
     if not api_key:
         raise ValueError("API key cannot be empty")
-    if not any(model_name in models_list for models_list in MODELS_LIST.values()):
+    if not any(model_name in models_list for models_list in unichat.MODELS_LIST.values()):
         raise ValueError(f"Unsupported model: {model_name}")
 
 
@@ -22,7 +23,7 @@ def main():
         sys.exit()
 
     # Set the API key after validation
-    client = UnifiedChatApi(api_key=api_key)
+    client = unichat.UnifiedChatApi(api_key=api_key)
 
     # Set the system role or instructions if needed
     role = input("Enter system instructions or leave blank for default:").strip()
