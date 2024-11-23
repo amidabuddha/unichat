@@ -20,10 +20,9 @@ twine upload dist/*
 pip install llm-unichat
 ```
 
-2. Add the relevant functions to your application from module 'unichat':
-- to initialise the API key: 'set_api_key'
-- to generate a chat completion: 'get_chat_completion'
-- [optional] import MODELS_LIST from 'models' for additional validation
+2. Add the class 'UnifiedChatApi' from module 'unichat' to your application:
+
+3. [optional] Import MODELS_LIST as well for additional validation
 
 ## Functionality testing: 
 Try the eclosed 'sample_chat.py' file:

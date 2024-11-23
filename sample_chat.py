@@ -1,7 +1,6 @@
 import sys
 
-from unichat.unified_chat_api import get_chat_completion, set_api_key
-from unichat.models import MODELS_LIST
+from unichat import UnifiedChatApi, MODELS_LIST
 
 def validate_inputs(api_key: str, model_name: str) -> None:
     if not api_key:
@@ -23,7 +22,7 @@ def main():
         sys.exit()
 
     # Set the API key after validation
-    set_api_key(api_key)
+    client = UnifiedChatApi(api_key=api_key)
 
     # Set the system role or instructions if needed
     role = input("Enter system instructions or leave blank for default:").strip()
@@ -47,7 +46,7 @@ def main():
 
         try:
             # Call the get_chat_completion function
-            assistant_response = get_chat_completion(
+            assistant_response = client.chat.completions.create(
                 model_name=model_name,
                 messages=conversation,
             )
