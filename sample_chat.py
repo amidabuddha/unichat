@@ -3,6 +3,7 @@ import sys
 # from unichat import UnifiedChatApi, MODELS_LIST
 import unichat
 
+
 def validate_inputs(api_key: str, model_name: str) -> None:
     if not api_key:
         raise ValueError("API key cannot be empty")
@@ -47,16 +48,16 @@ def main():
 
         try:
             # Call the get_chat_completion function
-            assistant_response = client.chat.completions.create(
+            response = client.chat.completions.create(
                 model_name=model_name,
                 messages=conversation,
             )
 
             # Add the assistant's response to the conversation
-            conversation.append({"role": "assistant", "content": assistant_response})
+            conversation.append({"role": "assistant", "content": response})
 
             # Display the assistant's response
-            print(f"\nAssistant: {assistant_response}")
+            print(f"\nAssistant: {response}")
 
         except Exception as e:
             print(f"An error occurred: {e}")

@@ -3,13 +3,13 @@ Universal Python API client for OpenAI, MistralAI, Anthropic, xAI, and Google AI
 
 ## Build sequence:
 ```shell
-rm -rf dist/*
+rm -rf dist build *.egg-info
 ```
 ```shell
-python3 setup.py sdist bdist_wheel
+python3 -m build
 ```
 ```shell
-twine upload dist/*         
+twine upload dist/*
 ```
 
 ## Usage:
@@ -24,8 +24,8 @@ pip install unichat
 
 3. [optional] Import MODELS_LIST as well for additional validation
 
-## Functionality testing: 
-Try the eclosed 'sample_chat.py' file:
+## Functionality testing:
+Try the eclosed in the source code 'sample_chat.py' file:
 
 ```shell
 python3 sample_chat.py
