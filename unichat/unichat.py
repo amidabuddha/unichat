@@ -88,7 +88,7 @@ class UnifiedChatApi:
                 model_name: str,
                 messages: List[Dict[str, str]],
                 temperature: str = "1.0",
-                cached: Union[bool, str] = True,
+                cached: Union[bool, str] = False,
             ) -> str:
                 """
                 Get chat completion from various AI models.
@@ -125,7 +125,7 @@ class UnifiedChatApi:
 
                     elif model_name in self.helper.models["anthropic_models"]:
                         temperature = 1 if float(temperature) > 1 else temperature
-                        if cached is True:
+                        if cached is False:
                             response = client.messages.create(
                                 model=model_name,
                                 max_tokens=self.helper._get_max_tokens(model_name),

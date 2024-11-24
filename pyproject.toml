@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "unichat"
-version = "0.1.1"
+version = "0.1.2"
 authors = [
-    { name = "amidabuddha", email = "versed_info0w@icloud.com" },
+    { name = "Stefan", email = "versed_info0w@icloud.com" },
 ]
 description = "Universal Python API client for OpenAI, MistralAI, Anthropic, xAI, and Google AI."
 readme = "README.md"
