@@ -48,16 +48,30 @@ def main():
 
         try:
             # Call the get_chat_completion function
-            response = client.chat.completions.create(
+
+            # With streaming
+            response = ""
+            print(f"\nAssistant: ", end="")
+            for chunk in client.chat.completions.create(
                 model_name=model_name,
                 messages=conversation,
-            )
+                ):
+
+                # Display the assistant's response
+                response += chunk
+                print(chunk, end="")
+            print()
+
+            # # Without streaming
+            # response = client.chat.completions.create(
+            #     model_name=model_name,
+            #     messages=conversation,
+            #     stream=False,
+            # )
+            # print(f"\nAssistant: {response}")
 
             # Add the assistant's response to the conversation
             conversation.append({"role": "assistant", "content": response})
-
-            # Display the assistant's response
-            print(f"\nAssistant: {response}")
 
         except Exception as e:
             print(f"An error occurred: {e}")

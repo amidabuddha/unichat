@@ -1,5 +1,5 @@
 import json
-from typing import Dict, List, Union
+from typing import Dict, Generator, List, Union
 
 import anthropic
 import google.generativeai as genai
@@ -8,6 +8,66 @@ from mistralai import Mistral
 
 from .models import MODELS_LIST, MODELS_MAX_TOKEN
 
+
+class UnifiedChatApi:
+    def __init__(self, api_key: str):
+        self.api_key = api_key
+        self._api_helper = _ApiHelper(
+            api_key=self.api_key,
+        )
+        self.chat = self.Chat(self._api_helper)
+
+    class Chat:
+        def __init__(self, _api_helper):
+            self._api_helper = _api_helper
+            self.completions = self.Completions(_api_helper)
+
+        class Completions:
+            def __init__(self, _api_helper):
+                self._api_helper = _api_helper
+                self._chat_helper = None
+
+            def create(
+                self,
+                model_name: str,
+                messages: List[Dict[str, str]],
+                temperature: str = "1.0",
+                stream: bool = True,
+                cached: Union[bool, str] = False,
+            ) -> Union[Generator | str]:
+                """
+                Get chat completion from various AI models.
+
+                Args:
+                    model_name: Name of the model to use
+                    messages: List of conversation messages
+                    temperature: Controls the randomness of the model's output. Higher values (e.g., 1.5)
+                        make the output more random, while lower values (e.g., 0.2) make it more deterministic.
+                        Should be between 0 and 2.
+                    stream: Return assistant response as a stream of chunks
+                    cached: Caching configuration (Anthropic only)
+
+                Returns:
+                    out: Response as text or stream
+
+                Raises:
+                    ConnectionError: If unable to reach the server
+                    RuntimeError: If rate limit exceeded or API status error
+                    Exception: For unexpected errors
+                """
+                client, messages, role = self._api_helper._set_defaults(
+                    model_name,
+                    messages,
+                    temperature,
+                )
+
+                self._chat_helper = _ChatHelper(self._api_helper, model_name, messages, temperature, stream, cached, client, role)
+
+                response = self._chat_helper._get_response()
+                if stream:
+                    return self._chat_helper._handle_stream(response)
+                else:
+                    return self._chat_helper._handle_response(response)
 
 class _ApiHelper:
     DEFAULT_MAX_TOKENS = 4096
@@ -66,123 +126,142 @@ class _ApiHelper:
         client = self._get_client(model_name, temperature, role)
         return client, conversation, role
 
-class UnifiedChatApi:
-    def __init__(self, api_key: str):
-        self.api_key = api_key
-        self.helper = _ApiHelper(
-            api_key=self.api_key,
-        )
-        self.chat = self.Chat(self.helper)
+class _ChatHelper:
+    def __init__(self, api_helper, model_name, messages, temperature, stream, cached, client, role):
+        self.api_helper = api_helper
+        self.model_name = model_name
+        self.messages = messages
+        self.temperature = float(temperature)
+        self.stream = stream
+        self.cached = cached
+        self.client = client
+        self.role = role
 
-    class Chat:
-        def __init__(self, helper):
-            self.helper = helper
-            self.completions = self.Completions(helper)
+    def _get_response(self) -> any:
+        try:
+            if self.model_name in self.api_helper.models["mistral_models"]:
+                if self.stream:
+                    response = self.client.chat.stream(
+                        model=self.model_name,
+                        temperature=self.temperature,
+                        messages=self.messages,
+                        stream=self.stream,
+                    )
+                else:
+                    response = self.client.chat.complete(
+                        model=self.model_name,
+                        temperature=self.temperature,
+                        messages=self.messages,
+                        stream=self.stream,
+                    )
 
-        class Completions:
-            def __init__(self, helper):
-                self.helper = helper
+            elif self.model_name in self.api_helper.models["anthropic_models"]:
+                self.temperature = 1 if self.temperature > 1 else self.temperature
+                if self.cached is False:
+                    response = self.client.messages.create(
+                        model=self.model_name,
+                        max_tokens=self.api_helper._get_max_tokens(self.model_name),
+                        temperature=self.temperature,
+                        system=self.role,
+                        messages=self.messages,
+                        stream=self.stream,
+                    )
+                else:
+                    response = self.client.beta.prompt_caching.messages.create(
+                        model=self.model_name,
+                        max_tokens=self.api_helper._get_max_tokens(self.model_name),
+                        temperature=self.temperature,
+                        system=[
+                            {"type": "text", "text": self.role},
+                            {"type": "text", "text": self.cached, "cache_control": {"type": "ephemeral"}},
+                        ],
+                        messages=self.messages,
+                        stream=self.stream,
+                    )
 
-            def create(
-                self,
-                model_name: str,
-                messages: List[Dict[str, str]],
-                temperature: str = "1.0",
-                cached: Union[bool, str] = False,
-            ) -> str:
-                """
-                Get chat completion from various AI models.
+            elif self.model_name in self.api_helper.models["gemini_models"]:
+                formatted_messages = [
+                    {"role": "model" if item["role"] == "assistant" else item["role"], "parts": [item["content"]]}
+                    for item in self.messages
+                ]
+                chat_session = self.client.start_chat(history=formatted_messages[:-1])
+                response = chat_session.send_message(formatted_messages[-1]["parts"][0], stream=self.stream)
 
-                Args:
-                    model_name: Name of the model to use
-                    messages: List of conversation messages
-                    temperature: Controls the randomness of the model's output. Higher values (e.g., 1.5)
-                        make the output more random, while lower values (e.g., 0.2) make it more deterministic.
-                        Should be between 0 and 2.
-                    cached: Caching configuration (Anthropic only)
-
-                Returns:
-                    str: The generated response
-
-                Raises:
-                    ConnectionError: If unable to reach the server
-                    RuntimeError: If rate limit exceeded or API status error
-                    Exception: For unexpected errors
-                """
-                client, messages, role = self.helper._set_defaults(
-                    model_name,
-                    messages,
-                    temperature,
+            elif self.model_name in self.api_helper.models["grok_models"]:
+                response = self.client.chat.completions.create(
+                    model=self.model_name,
+                    temperature=self.temperature,
+                    messages=self.messages,
+                    stream=self.stream,
                 )
-                try:
-                    if model_name in self.helper.models["mistral_models"]:
-                        response = client.chat.complete(
-                            model=model_name,
-                            temperature=float(temperature),
-                            messages=messages,
-                        )
-                        response_content = response.choices[0].message.content
 
-                    elif model_name in self.helper.models["anthropic_models"]:
-                        temperature = 1 if float(temperature) > 1 else temperature
-                        if cached is False:
-                            response = client.messages.create(
-                                model=model_name,
-                                max_tokens=self.helper._get_max_tokens(model_name),
-                                temperature=float(temperature),
-                                system=role,
-                                messages=messages,
-                            ).model_dump_json()
-                        else:
-                            response = client.beta.prompt_caching.messages.create(
-                                model=model_name,
-                                max_tokens=self.helper._get_max_tokens(model_name),
-                                temperature=float(temperature),
-                                system=[
-                                    {"type": "text", "text": role},
-                                    {"type": "text", "text": cached, "cache_control": {"type": "ephemeral"}},
-                                ],
-                                messages=messages,
-                            ).model_dump_json()
+            elif self.model_name in self.api_helper.models["openai_models"]:
+                response = self.client.chat.completions.create(
+                    model=self.model_name,
+                    temperature=self.temperature,
+                    messages=self.messages,
+                    stream=self.stream,
+                )
 
-                        response = json.loads(response)
-                        response_content = response["content"][0]["text"]
+            else:
+                raise ValueError(f"Model {self.model_name} is currently not supported")
 
-                    elif model_name in self.helper.models["gemini_models"]:
-                        formatted_messages = [
-                            {"role": "model" if item["role"] == "assistant" else item["role"], "parts": [item["content"]]}
-                            for item in messages
-                        ]
-                        chat_session = client.start_chat(history=formatted_messages[:-1])
-                        response = chat_session.send_message(formatted_messages[-1]["parts"][0])
-                        response_content = response.text
+            return response
 
-                    elif model_name in self.helper.models["grok_models"]:
-                        response = client.chat.completions.create(
-                            model=model_name,
-                            temperature=float(temperature),
-                            messages=messages,
-                        )
-                        response_content = response.choices[0].message.content
+        except (openai.APIConnectionError, anthropic.APIConnectionError) as e:
+            raise ConnectionError(f"The server could not be reached: {e}") from e
+        except (openai.RateLimitError, anthropic.RateLimitError) as e:
+            raise RuntimeError(f"Rate limit exceeded: {e}") from e
+        except (openai.APIStatusError, anthropic.APIStatusError, anthropic.BadRequestError) as e:
+            raise RuntimeError(f"API status error: {e.status_code} - {e.message}") from e
+        except Exception as e:
+            raise Exception(f"An unexpected error occurred: {e}") from e
 
-                    elif model_name in self.helper.models["openai_models"]:
-                        response = client.chat.completions.create(
-                            model=model_name,
-                            temperature=float(temperature),
-                            messages=messages,
-                        )
-                        response_content = response.choices[0].message.content
+    def _handle_response(self, response) -> str:
+        try:
+            if self.model_name in self.api_helper.models["mistral_models"]:
+                response_content = response.choices[0].message.content
 
-                    else:
-                        return f"Model {model_name} is currently not supported"
+            elif self.model_name in self.api_helper.models["anthropic_models"]:
+                response_content = response.content[0].text
 
-                    return response_content
+            elif self.model_name in self.api_helper.models["gemini_models"]:
+                response_content = response.text
 
-                except (openai.APIConnectionError, anthropic.APIConnectionError) as e:
-                    raise ConnectionError(f"The server could not be reached: {e}") from e
-                except (openai.RateLimitError, anthropic.RateLimitError) as e:
-                    raise RuntimeError(f"Rate limit exceeded: {e}") from e
-                except (openai.APIStatusError, anthropic.APIStatusError, anthropic.BadRequestError) as e:
-                    raise RuntimeError(f"API status error: {e.status_code} - {e.message}") from e
-                except Exception as e:
-                    raise Exception(f"An unexpected error occurred: {e}") from e
+            elif self.model_name in self.api_helper.models["grok_models"]:
+                response_content = response.choices[0].message.content
+
+            elif self.model_name in self.api_helper.models["openai_models"]:
+                response_content = response.choices[0].message.content
+
+            return response_content
+
+        except Exception as e:
+            raise Exception(f"An unexpected error occurred: {e}") from e
+
+    def _handle_stream(self, response) -> Generator:
+        try:
+            if self.model_name in self.api_helper.models["mistral_models"]:
+                for chunk in response:
+                    yield chunk.data.choices[0].delta.content
+            elif self.model_name in self.api_helper.models["anthropic_models"]:
+                for chunk in response:
+                    if chunk.type == "content_block_delta":
+                        yield chunk.delta.text
+
+            elif self.model_name in self.api_helper.models["gemini_models"]:
+                for chunk in response:
+                    yield chunk.text
+
+            elif self.model_name in self.api_helper.models["grok_models"]:
+                for chunk in response:
+                    if chunk.choices[0].delta.content:
+                        yield chunk.choices[0].delta.content
+
+            elif self.model_name in self.api_helper.models["openai_models"]:
+                for chunk in response:
+                    if chunk.choices[0].delta.content:
+                        yield chunk.choices[0].delta.content
+
+        except Exception as e:
+            raise Exception(f"An unexpected error occurred: {e}") from e
