@@ -12,6 +12,7 @@ MODELS_LIST =  {
         "gpt-3.5-turbo",
         "gpt-4o-mini",
         "gpt-4o",
+        "gpt-4o-2024-11-20",
         "o1-mini",
         "o1-preview"
     ],
@@ -28,6 +29,7 @@ MODELS_MAX_TOKEN =  {
     "gpt-3.5-turbo": "4096",
     "gpt-4o-mini": "16384",
     "gpt-4o": "16384",
+    "gpt-4o-2024-11-20": "16384",
     "o1-mini": "65536",
     "o1-preview": "32768",
     "mistral-small-latest": "32000",
