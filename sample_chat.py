@@ -53,7 +53,7 @@ def main():
             response = ""
             print(f"\nAssistant: ", end="")
             for chunk in client.chat.completions.create(
-                model_name=model_name,
+                model=model_name,
                 messages=conversation,
                 ):
 
@@ -64,7 +64,7 @@ def main():
 
             # # Without streaming
             # response = client.chat.completions.create(
-            #     model_name=model_name,
+            #     model=model_name,
             #     messages=conversation,
             #     stream=False,
             # )

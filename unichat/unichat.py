@@ -29,7 +29,7 @@ class UnifiedChatApi:
 
             def create(
                 self,
-                model_name: str,
+                model: str,
                 messages: List[Dict[str, str]],
                 temperature: str = "1.0",
                 stream: bool = True,
@@ -56,12 +56,12 @@ class UnifiedChatApi:
                     Exception: For unexpected errors
                 """
                 client, messages, role = self._api_helper._set_defaults(
-                    model_name,
+                    model,
                     messages,
                     temperature,
                 )
 
-                self._chat_helper = _ChatHelper(self._api_helper, model_name, messages, temperature, stream, cached, client, role)
+                self._chat_helper = _ChatHelper(self._api_helper, model, messages, temperature, stream, cached, client, role)
 
                 response = self._chat_helper._get_response()
                 if stream:
