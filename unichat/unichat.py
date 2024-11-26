@@ -145,14 +145,12 @@ class _ChatHelper:
                         model=self.model_name,
                         temperature=self.temperature,
                         messages=self.messages,
-                        stream=self.stream,
                     )
                 else:
                     response = self.client.chat.complete(
                         model=self.model_name,
                         temperature=self.temperature,
                         messages=self.messages,
-                        stream=self.stream,
                     )
 
             elif self.model_name in self.api_helper.models["anthropic_models"]:
@@ -244,6 +242,7 @@ class _ChatHelper:
             if self.model_name in self.api_helper.models["mistral_models"]:
                 for chunk in response:
                     yield chunk.data.choices[0].delta.content
+
             elif self.model_name in self.api_helper.models["anthropic_models"]:
                 for chunk in response:
                     if chunk.type == "content_block_delta":
