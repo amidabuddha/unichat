@@ -164,7 +164,7 @@ class _ChatHelper:
                         stream=self.stream,
                     )
 
-            elif self.model_name in [self.api_helper.models["gemini_models"], self.api_helper.models["grok_models"], self.api_helper.models["openai_models"]]:
+            elif self.model_name in (self.api_helper.models["gemini_models"] + self.api_helper.models["grok_models"] + self.api_helper.models["openai_models"]):
                 response = self.client.chat.completions.create(
                     model=self.model_name,
                     temperature=self.temperature,
@@ -191,7 +191,7 @@ class _ChatHelper:
             if self.model_name in self.api_helper.models["anthropic_models"]:
                 response_content = response.content[0].text
 
-            elif self.model_name in [self.api_helper.models["mistral_models"], self.api_helper.models["gemini_models"], self.api_helper.models["grok_models"], self.api_helper.models["openai_models"]]:
+            elif self.model_name in (self.api_helper.models["mistral_models"] + self.api_helper.models["gemini_models"] + self.api_helper.models["grok_models"] + self.api_helper.models["openai_models"]):
                 response_content = response.choices[0].message.content
 
             return response_content
@@ -206,7 +206,7 @@ class _ChatHelper:
                     if chunk.type == "content_block_delta":
                         yield chunk.delta.text
 
-            elif self.model_name in [self.api_helper.models["mistral_models"], self.api_helper.models["gemini_models"], self.api_helper.models["grok_models"], self.api_helper.models["openai_models"]]:
+            elif self.model_name in (self.api_helper.models["mistral_models"] + self.api_helper.models["gemini_models"] + self.api_helper.models["grok_models"] + self.api_helper.models["openai_models"]):
                 for chunk in response:
                     if chunk.choices[0].delta.content:
                         yield chunk.choices[0].delta.content
