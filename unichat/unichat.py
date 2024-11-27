@@ -1,8 +1,6 @@
-import json
 from typing import Dict, Generator, List, Union
 
 import anthropic
-import google.generativeai as genai
 import openai
 from mistralai import Mistral
 
@@ -58,7 +56,6 @@ class UnifiedChatApi:
                 client, messages, role = self._api_helper._set_defaults(
                     model,
                     messages,
-                    temperature,
                 )
 
                 self._chat_helper = _ChatHelper(self._api_helper, model, messages, temperature, stream, cached, client, role)
@@ -81,7 +78,7 @@ class _ApiHelper:
     def _get_max_tokens(self, model_name: str) -> int:
         return int(self.max_tokens.get(model_name, self.DEFAULT_MAX_TOKENS))
 
-    def _get_client(self, model_name: str, temperature: str, role: str = ""):
+    def _get_client(self, model_name: str):
         if self.api_client is not None:
             return self.api_client
 
@@ -92,16 +89,7 @@ class _ApiHelper:
         elif model_name in self.models["grok_models"]:
             client = openai.OpenAI(api_key=self.api_key, base_url="https://api.x.ai/v1")
         elif model_name in self.models["gemini_models"]:
-            genai.configure(api_key=self.api_key)
-            generation_config = {
-                "temperature": float(temperature),
-            }
-            client = genai.GenerativeModel(
-                model_name=model_name,
-                generation_config=generation_config,
-                system_instruction=role,
-                tools="code_execution",
-            )
+            client = openai.OpenAI(api_key=self.api_key, base_url="https://generativelanguage.googleapis.com/v1beta/openai/")
         elif model_name in self.models["openai_models"]:
             client = openai.OpenAI(api_key=self.api_key)
         else:
@@ -113,17 +101,16 @@ class _ApiHelper:
     def _set_defaults(
         self,
         model_name: str,
-        conversation: List[Dict[str, str]],
-        temperature: str,
+        conversation: List[Dict[str, str]]
     ):
         # Extract the system instructions from the conversation.
         # OpenAI "o1" models do not support system role as part of the beta limitations. More info here: https://platform.openai.com/docs/guides/reasoning/beta-limitations
-        if model_name in self.models["anthropic_models"] or model_name in self.models["gemini_models"] or model_name.startswith("o1"):
+        if model_name in self.models["anthropic_models"] or model_name.startswith("o1"):
             role = conversation[0]["content"] if conversation[0]["role"] == "system" else ""
             conversation = [message for message in conversation if message["role"] != "system"]
         else:
             role = ""
-        client = self._get_client(model_name, temperature, role)
+        client = self._get_client(model_name)
         return client, conversation, role
 
 class _ChatHelper:
@@ -177,23 +164,7 @@ class _ChatHelper:
                         stream=self.stream,
                     )
 
-            elif self.model_name in self.api_helper.models["gemini_models"]:
-                formatted_messages = [
-                    {"role": "model" if item["role"] == "assistant" else item["role"], "parts": [item["content"]]}
-                    for item in self.messages
-                ]
-                chat_session = self.client.start_chat(history=formatted_messages[:-1])
-                response = chat_session.send_message(formatted_messages[-1]["parts"][0], stream=self.stream)
-
-            elif self.model_name in self.api_helper.models["grok_models"]:
-                response = self.client.chat.completions.create(
-                    model=self.model_name,
-                    temperature=self.temperature,
-                    messages=self.messages,
-                    stream=self.stream,
-                )
-
-            elif self.model_name in self.api_helper.models["openai_models"]:
+            elif self.model_name in [self.api_helper.models["gemini_models"], self.api_helper.models["grok_models"], self.api_helper.models["openai_models"]]:
                 response = self.client.chat.completions.create(
                     model=self.model_name,
                     temperature=self.temperature,
@@ -217,19 +188,10 @@ class _ChatHelper:
 
     def _handle_response(self, response) -> str:
         try:
-            if self.model_name in self.api_helper.models["mistral_models"]:
-                response_content = response.choices[0].message.content
-
-            elif self.model_name in self.api_helper.models["anthropic_models"]:
+            if self.model_name in self.api_helper.models["anthropic_models"]:
                 response_content = response.content[0].text
 
-            elif self.model_name in self.api_helper.models["gemini_models"]:
-                response_content = response.text
-
-            elif self.model_name in self.api_helper.models["grok_models"]:
-                response_content = response.choices[0].message.content
-
-            elif self.model_name in self.api_helper.models["openai_models"]:
+            elif self.model_name in [self.api_helper.models["mistral_models"], self.api_helper.models["gemini_models"], self.api_helper.models["grok_models"], self.api_helper.models["openai_models"]]:
                 response_content = response.choices[0].message.content
 
             return response_content
@@ -239,25 +201,12 @@ class _ChatHelper:
 
     def _handle_stream(self, response) -> Generator:
         try:
-            if self.model_name in self.api_helper.models["mistral_models"]:
-                for chunk in response:
-                    yield chunk.data.choices[0].delta.content
-
-            elif self.model_name in self.api_helper.models["anthropic_models"]:
+            if self.model_name in self.api_helper.models["anthropic_models"]:
                 for chunk in response:
                     if chunk.type == "content_block_delta":
                         yield chunk.delta.text
 
-            elif self.model_name in self.api_helper.models["gemini_models"]:
-                for chunk in response:
-                    yield chunk.text
-
-            elif self.model_name in self.api_helper.models["grok_models"]:
-                for chunk in response:
-                    if chunk.choices[0].delta.content:
-                        yield chunk.choices[0].delta.content
-
-            elif self.model_name in self.api_helper.models["openai_models"]:
+            elif self.model_name in [self.api_helper.models["mistral_models"], self.api_helper.models["gemini_models"], self.api_helper.models["grok_models"], self.api_helper.models["openai_models"]]:
                 for chunk in response:
                     if chunk.choices[0].delta.content:
                         yield chunk.choices[0].delta.content
