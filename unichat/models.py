@@ -1,1 +1,1 @@
-MODELS_LIST = {anthropic_models: [claude-3-5-haiku-latest, claude-3-5-sonnet-latest, claude-3-opus-latest], mistral_models: [mistral-small-latest, mistral-large-latest], openai_models: [gpt-3.5-turbo, gpt-4o-mini, gpt-4o, gpt-4o-2024-11-20, o1-mini, o1-preview], grok_models: [grok-beta], gemini_models: [gemini-1.5-flash, gemini-1.5-pro, gemini-1.5-pro-latest, gemini-1.5-pro-002, gemini-exp-1121, gemini-exp-1114]}
+MODELS_LIST =  {
