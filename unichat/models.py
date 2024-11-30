@@ -22,23 +22,25 @@ MODELS_LIST =  {
     "gemini_models": [
         "gemini-1.5-flash",
         "gemini-1.5-pro",
-        "gemini-exp-1121"
+        "gemini-exp-1121",
+        "gemini-exp-1114"
     ]
 }
 MODELS_MAX_TOKEN =  {
-    "gpt-3.5-turbo": "4096",
-    "gpt-4o-mini": "16384",
-    "gpt-4o": "16384",
-    "gpt-4o-2024-11-20": "16384",
-    "o1-mini": "65536",
-    "o1-preview": "32768",
-    "mistral-small-latest": "32000",
-    "mistral-large-latest": "128000",
-    "claude-3-5-haiku-latest": "8192",
-    "claude-3-5-sonnet-latest": "8192",
-    "claude-3-opus-latest": "4096",
-    "grok-beta": "131072",
-    "gemini-1.5-flash": "8192",
-    "gemini-1.5-pro": "8192",
-    "gemini-exp-1121": "8192"
+    "gpt-3.5-turbo": 4096,
+    "gpt-4o-mini": 16384,
+    "gpt-4o": 16384,
+    "gpt-4o-2024-11-20": 16384,
+    "o1-mini": 65536,
+    "o1-preview": 32768,
+    "mistral-small-latest": 32000,
+    "mistral-large-latest": 128000,
+    "claude-3-5-haiku-latest": 8192,
+    "claude-3-5-sonnet-latest": 8192,
+    "claude-3-opus-latest": 4096,
+    "grok-beta": 131072,
+    "gemini-1.5-flash": 8192,
+    "gemini-1.5-pro": 8192,
+    "gemini-exp-1121": 8192,
+    "gemini-exp-1114": 8192
 }
