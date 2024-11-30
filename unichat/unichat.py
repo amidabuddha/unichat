@@ -76,7 +76,7 @@ class _ApiHelper:
         self.api_client = None
 
     def _get_max_tokens(self, model_name: str) -> int:
-        return int(self.max_tokens.get(model_name, self.DEFAULT_MAX_TOKENS))
+        return self.max_tokens.get(model_name, self.DEFAULT_MAX_TOKENS)
 
     def _get_client(self, model_name: str):
         if self.api_client is not None:
