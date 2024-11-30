@@ -22,11 +22,7 @@ MODELS_LIST =  {
     "gemini_models": [
         "gemini-1.5-flash",
         "gemini-1.5-pro",
-        "gemini-exp-1121",
-        "gemini-exp-1114",
-        "gemini-exp-test",
-        "gemini-exp-test-2",
-        "gemini-exp-test-3"
+        "gemini-exp-1121"
     ]
 }
 MODELS_MAX_TOKEN =  {
@@ -44,9 +40,5 @@ MODELS_MAX_TOKEN =  {
     "grok-beta": "131072",
     "gemini-1.5-flash": "8192",
     "gemini-1.5-pro": "8192",
-    "gemini-exp-1121": "8192",
-    "gemini-exp-1114": "8192",
-    "gemini-exp-test": "8192",
-    "gemini-exp-test-2": "8192",
-    "gemini-exp-test-3": "8192"
+    "gemini-exp-1121": "8192"
 }
