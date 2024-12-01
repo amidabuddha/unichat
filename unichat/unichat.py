@@ -104,10 +104,16 @@ class _ApiHelper:
         conversation: List[Dict[str, str]]
     ):
         # Extract the system instructions from the conversation.
-        # OpenAI "o1" models do not support system role as part of the beta limitations. More info here: https://platform.openai.com/docs/guides/reasoning/beta-limitations
-        if model_name in self.models["anthropic_models"] or model_name.startswith("o1"):
+        if model_name in self.models["anthropic_models"]:
             role = conversation[0]["content"] if conversation[0]["role"] == "system" else ""
             conversation = [message for message in conversation if message["role"] != "system"]
+        elif model_name.startswith("o1"):
+            # OpenAI "o1" models do not support system role as part of the beta limitations. More info here: https://platform.openai.com/docs/guides/reasoning/beta-limitations
+            if conversation[0]["role"] == "system":
+                system_content = conversation[0]["content"]
+                conversation[1]["content"] = f"{system_content}\n\n{conversation[1]['content']}"
+                conversation = [message for message in conversation if message["role"] != "system"]
+            role = ""
         else:
             role = ""
         client = self._get_client(model_name)
