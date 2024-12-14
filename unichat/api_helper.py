@@ -44,6 +44,7 @@ class _ApiHelper:
         model_name: str,
         conversation: List[Dict[str, str]]
     ):
+        role = ""
         # Extract the system instructions from the conversation.
         if model_name in self.models["anthropic_models"]:
             role = conversation[0]["content"] if conversation[0]["role"] == "system" else ""
@@ -54,9 +55,7 @@ class _ApiHelper:
                 system_content = conversation[0]["content"]
                 conversation[1]["content"] = f"{system_content}\n\n{conversation[1]['content']}"
                 conversation = [message for message in conversation if message["role"] != "system"]
-            role = ""
-        else:
-            role = ""
+
         client = self._get_client(model_name)
         return client, conversation, role
 

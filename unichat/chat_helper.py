@@ -1,4 +1,4 @@
-from typing import Generator, List, Any, Optional, Union, Dict
+from typing import Generator, List, Any, Optional, Union, Dict, Any
 import anthropic
 import openai
 
@@ -9,7 +9,7 @@ class _ChatHelper:
         api_helper,
         model_name: str,
         messages: List[dict],
-        temperature: float,
+        temperature: str,
         tools: Optional[List[dict]] = None,
         stream: bool = False,
         cached: Union[bool, str] = False,
@@ -26,7 +26,7 @@ class _ChatHelper:
         self.client = client
         self.role = role
 
-    def _get_response(self) -> any:
+    def _get_response(self) -> Any:
         try:
             if self.model_name in self.api_helper.models["mistral_models"]:
                 mistral_params = {

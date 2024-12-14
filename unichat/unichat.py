@@ -7,19 +7,17 @@ from .chat_helper import _ChatHelper
 class UnifiedChatApi:
     def __init__(self, api_key: str):
         self.api_key = api_key
-        self._api_helper = _ApiHelper(
-            api_key=self.api_key,
-        )
-        self.chat = self.Chat(self._api_helper)
+        self._api_helper = _ApiHelper(api_key=api_key)
+        self.chat = self.Chat(self)
 
     class Chat:
-        def __init__(self, _api_helper):
-            self._api_helper = _api_helper
-            self.completions = self.Completions(_api_helper)
+        def __init__(self, parent: 'UnifiedChatApi'):
+            self._api_helper: _ApiHelper = parent._api_helper
+            self.completions = self.Completions(self)
 
         class Completions:
-            def __init__(self, _api_helper):
-                self._api_helper = _api_helper
+            def __init__(self, parent: 'UnifiedChatApi.Chat'):
+                self._api_helper: _ApiHelper = parent._api_helper
                 self._chat_helper = None
 
             def create(
@@ -30,7 +28,7 @@ class UnifiedChatApi:
                 tools: Optional[List[dict]] = None,
                 stream: bool = True,
                 cached: Union[bool, str] = False,
-            ) -> Union[Generator | str]:
+            ) -> Union[Generator, str]:
                 """
                 Get chat completion from various AI models.
 
