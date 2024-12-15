@@ -9,7 +9,6 @@ MODELS_LIST =  {
         "mistral-large-latest"
     ],
     "openai_models": [
-        "gpt-3.5-turbo",
         "gpt-4o-mini",
         "gpt-4o",
         "gpt-4o-2024-11-20",
@@ -22,11 +21,11 @@ MODELS_LIST =  {
     "gemini_models": [
         "gemini-1.5-flash",
         "gemini-1.5-pro",
+        "gemini-2.0-flash-exp",
         "gemini-exp-1206"
     ]
 }
 MODELS_MAX_TOKEN =  {
-    "gpt-3.5-turbo": 4096,
     "gpt-4o-mini": 16384,
     "gpt-4o": 16384,
     "gpt-4o-2024-11-20": 16384,
@@ -40,5 +39,6 @@ MODELS_MAX_TOKEN =  {
     "grok-beta": 131072,
     "gemini-1.5-flash": 8192,
     "gemini-1.5-pro": 8192,
+    "gemini-2.0-flash-exp": 8192,
     "gemini-exp-1206": 8192
 }
