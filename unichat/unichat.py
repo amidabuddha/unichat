@@ -62,7 +62,7 @@ class UnifiedChatApi:
                     self._api_helper,
                     model,
                     messages,
-                    temperature,
+                    float(temperature),
                     tools,
                     stream,
                     cached,

@@ -9,7 +9,7 @@ class _ChatHelper:
         api_helper,
         model_name: str,
         messages: List[dict],
-        temperature: str,
+        temperature: float,
         tools: Optional[List[dict]] = None,
         stream: bool = False,
         cached: Union[bool, str] = False,
@@ -19,7 +19,7 @@ class _ChatHelper:
         self.api_helper = api_helper
         self.model_name = model_name
         self.messages = messages
-        self.temperature = float(temperature)
+        self.temperature = temperature
         self.tools = tools or []
         self.stream = stream
         self.cached = cached
