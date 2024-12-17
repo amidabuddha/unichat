@@ -9,11 +9,13 @@ MODELS_LIST =  {
         "mistral-large-latest"
     ],
     "openai_models": [
+        "chatgpt-4o-latest",
         "gpt-4o-mini",
         "gpt-4o",
         "gpt-4o-2024-11-20",
         "o1-mini",
-        "o1-preview"
+        "o1-preview",
+        "o1"
     ],
     "grok_models": [
         "grok-beta"
@@ -26,11 +28,13 @@ MODELS_LIST =  {
     ]
 }
 MODELS_MAX_TOKEN =  {
+    "chatgpt-4o-latest": 4096,
     "gpt-4o-mini": 16384,
     "gpt-4o": 16384,
     "gpt-4o-2024-11-20": 16384,
     "o1-mini": 65536,
     "o1-preview": 32768,
+    "o1": 100000,
     "mistral-small-latest": 32000,
     "mistral-large-latest": 128000,
     "claude-3-5-haiku-latest": 8192,
