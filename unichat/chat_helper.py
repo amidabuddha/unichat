@@ -56,18 +56,13 @@ class _ChatHelper:
                     anthropic_params["tools"] = self.tools
 
                 if self.cached is False:
-                    response = self.client.messages.create(
-                        **anthropic_params,
-                        system=self.role,
-                    )
+                    anthropic_params["system"] = self.role
                 else:
-                    response = self.client.beta.prompt_caching.messages.create(
-                        **anthropic_params,
-                        system=[
-                            {"type": "text", "text": self.role},
-                            {"type": "text", "text": self.cached, "cache_control": {"type": "ephemeral"}},
-                        ],
-                    )
+                    anthropic_params["system"] = [
+                        {"type": "text", "text": self.role},
+                        {"type": "text", "text": self.cached, "cache_control": {"type": "ephemeral"}},
+                    ]
+                response = self.client.messages.create(**anthropic_params)
 
             elif self.model_name in (
                 self.api_helper.models["gemini_models"]
