@@ -50,11 +50,13 @@ class _ApiHelper:
             role = conversation[0]["content"] if conversation[0]["role"] == "system" else ""
             conversation = [message for message in conversation if message["role"] != "system"]
         elif model_name.startswith("o1"):
-            # OpenAI "o1" models do not support system role as part of the beta limitations. More info here: https://platform.openai.com/docs/guides/reasoning/beta-limitations
             if conversation[0]["role"] == "system":
-                system_content = conversation[0]["content"]
-                conversation[1]["content"] = f"{system_content}\n\n{conversation[1]['content']}"
-                conversation = [message for message in conversation if message["role"] != "system"]
+                if model_name == "o1":
+                    conversation[0]["role"] = "developer"
+                else:
+                    system_content = conversation[0]["content"]
+                    conversation[1]["content"] = f"{system_content}\n\n{conversation[1]['content']}"
+                    conversation = [message for message in conversation if message["role"] != "system"]
 
         client = self._get_client(model_name)
         return client, conversation, role

@@ -62,6 +62,7 @@ class _ChatHelper:
                         {"type": "text", "text": self.role},
                         {"type": "text", "text": self.cached, "cache_control": {"type": "ephemeral"}},
                     ]
+
                 response = self.client.messages.create(**anthropic_params)
 
             elif self.model_name in (
@@ -75,7 +76,8 @@ class _ChatHelper:
                     "messages": self.messages,
                     "stream": self.stream,
                 }
-                if self.tools:
+
+                if self.tools and not self.model_name.startswith("o1"):
                     params["tools"] = self.api_helper.transform_tools(self.tools)
 
                 response = self.client.chat.completions.create(**params)
