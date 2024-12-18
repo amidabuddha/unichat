@@ -306,6 +306,15 @@ class _ApiHelper:
 
             if chunk_type == "message_start":
                 message = getattr(chunk, "message")
+                # Print token usage information
+                usage = getattr(message, "usage")
+                input_tokens = usage.input_tokens
+                input_tokens_cache_read = getattr(usage, 'cache_read_input_tokens', '---')
+                # Calculate the percentage of input prompt cached
+                total_input_tokens = input_tokens + (int(input_tokens_cache_read) if input_tokens_cache_read != '---' else 0)
+                percentage_cached = (int(input_tokens_cache_read) / total_input_tokens * 100 if input_tokens_cache_read != '---' and total_input_tokens > 0 else 0)
+                print(f"{percentage_cached:.1f}% of input prompt cached ({total_input_tokens} tokens)")
+                # Return chunk
                 yield type('obj', (object,), {
                     "id": getattr(message, "id"),
                     "object": "chat.completion.chunk",
@@ -465,3 +474,38 @@ class _ApiHelper:
 
         except Exception as e:
             raise Exception(f"Error processing stream chunk: {e}")
+
+    def cache_messages(self, messages):
+        result = []
+        user_messages = 0
+        # Iterate through messages in reverse order
+        for message in reversed(messages):
+            # Add regular user mesasge to cache
+            if (message["role"] == "user" and user_messages < 2 and isinstance(message.get("content"), str)):
+                result.append({
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": message["content"],
+                            "cache_control": {"type": "ephemeral"}
+                        }
+                    ]
+                })
+                user_messages += 1
+            # Add tool result user mesasge to cache
+            elif (message["role"] == "user" and user_messages < 2 and (isinstance(message.get("content"), list) and message["content"] and isinstance(message["content"][0], dict))):
+                result.append({
+                    "role": "user",
+                    "content": [
+                        {
+                        **message["content"][0],
+                        "cache_control": {"type": "ephemeral"}
+                        }
+                    ]
+                })
+                user_messages += 1
+            else:
+                result.append(message)
+
+        return list(reversed(result))

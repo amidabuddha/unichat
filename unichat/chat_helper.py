@@ -49,10 +49,11 @@ class _ChatHelper:
                     "model": self.model_name,
                     "max_tokens": self.api_helper._get_max_tokens(self.model_name),
                     "temperature": self.temperature,
-                    "messages": anthropic_messages,
                     "stream": self.stream,
                 }
+
                 if self.tools:
+                    self.tools[-1].update({"cache_control": {"type": "ephemeral"}})
                     anthropic_params["tools"] = self.tools
 
                 if self.cached is False:
@@ -62,6 +63,8 @@ class _ChatHelper:
                         {"type": "text", "text": self.role},
                         {"type": "text", "text": self.cached, "cache_control": {"type": "ephemeral"}},
                     ]
+
+                anthropic_params["messages"] = self.api_helper.cache_messages(anthropic_messages)
 
                 response = self.client.messages.create(**anthropic_params)
 
@@ -100,6 +103,14 @@ class _ChatHelper:
         """Handle non-streaming response."""
         try:
             if self.model_name in self.api_helper.models["anthropic_models"]:
+                # Print token usage information
+                input_tokens = response.usage.input_tokens
+                input_tokens_cache_read = getattr(response.usage, 'cache_read_input_tokens', '---')
+                # Calculate the percentage of input prompt cached
+                total_input_tokens = input_tokens + (int(input_tokens_cache_read) if input_tokens_cache_read != '---' else 0)
+                percentage_cached = (int(input_tokens_cache_read) / total_input_tokens * 100 if input_tokens_cache_read != '---' and total_input_tokens > 0 else 0)
+                print(f"{percentage_cached:.1f}% of input prompt cached ({total_input_tokens} tokens)")
+
                 return self.api_helper.convert_claude_to_gpt(response)
             elif self.model_name in self.api_helper.models["mistral_models"]:
                 return self.api_helper.transform_response(response)
@@ -115,7 +126,6 @@ class _ChatHelper:
     def _handle_stream(self, response) -> Generator[Dict[str, Any], None, None]:
         """Handle streaming response."""
         try:
-
             if self.model_name in self.api_helper.models["anthropic_models"]:
                 for chunk in self.api_helper.transform_stream(response):
                     if chunk:
