@@ -103,14 +103,6 @@ class _ChatHelper:
         """Handle non-streaming response."""
         try:
             if self.model_name in self.api_helper.models["anthropic_models"]:
-                # Print token usage information
-                input_tokens = response.usage.input_tokens
-                input_tokens_cache_read = getattr(response.usage, 'cache_read_input_tokens', '---')
-                # Calculate the percentage of input prompt cached
-                total_input_tokens = input_tokens + (int(input_tokens_cache_read) if input_tokens_cache_read != '---' else 0)
-                percentage_cached = (int(input_tokens_cache_read) / total_input_tokens * 100 if input_tokens_cache_read != '---' and total_input_tokens > 0 else 0)
-                print(f"{percentage_cached:.1f}% of input prompt cached ({total_input_tokens} tokens)")
-
                 return self.api_helper.convert_claude_to_gpt(response)
             elif self.model_name in self.api_helper.models["mistral_models"]:
                 return self.api_helper.transform_response(response)

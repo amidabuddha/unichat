@@ -306,15 +306,6 @@ class _ApiHelper:
 
             if chunk_type == "message_start":
                 message = getattr(chunk, "message")
-                # Print token usage information
-                usage = getattr(message, "usage")
-                input_tokens = usage.input_tokens
-                input_tokens_cache_read = getattr(usage, 'cache_read_input_tokens', '---')
-                # Calculate the percentage of input prompt cached
-                total_input_tokens = input_tokens + (int(input_tokens_cache_read) if input_tokens_cache_read != '---' else 0)
-                percentage_cached = (int(input_tokens_cache_read) / total_input_tokens * 100 if input_tokens_cache_read != '---' and total_input_tokens > 0 else 0)
-                print(f"{percentage_cached:.1f}% of input prompt cached ({total_input_tokens} tokens)")
-                # Return chunk
                 yield type('obj', (object,), {
                     "id": getattr(message, "id"),
                     "object": "chat.completion.chunk",
