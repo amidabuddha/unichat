@@ -1,5 +1,5 @@
 # unichat
-Universal API chat Python client for OpenAI, MistralAI, Anthropic, xAI, and Google AI.
+Universal API chat Python client for OpenAI, MistralAI, Anthropic, xAI, Google AI and DeepSeek.
 
 ## Build sequence:
 ```shell
