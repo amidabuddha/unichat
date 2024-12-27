@@ -31,6 +31,8 @@ class _ApiHelper:
             client = openai.OpenAI(api_key=self.api_key, base_url="https://api.x.ai/v1")
         elif model_name in self.models["gemini_models"]:
             client = openai.OpenAI(api_key=self.api_key, base_url="https://generativelanguage.googleapis.com/v1beta/openai/")
+        elif model_name in self.models["deepseek_models"]:
+            client = openai.OpenAI(api_key=self.api_key, base_url="https://api.deepseek.com/v1")
         elif model_name in self.models["openai_models"]:
             client = openai.OpenAI(api_key=self.api_key)
         else:

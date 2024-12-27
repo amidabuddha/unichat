@@ -71,6 +71,7 @@ class _ChatHelper:
             elif self.model_name in (
                 self.api_helper.models["gemini_models"]
                 + self.api_helper.models["grok_models"]
+                + self.api_helper.models["deepseek_models"]
                 + self.api_helper.models["openai_models"]
             ):
                 params = {
@@ -106,11 +107,7 @@ class _ChatHelper:
                 return self.api_helper.convert_claude_to_gpt(response)
             elif self.model_name in self.api_helper.models["mistral_models"]:
                 return self.api_helper.transform_response(response)
-            elif self.model_name in (
-                self.api_helper.models["gemini_models"]
-                + self.api_helper.models["grok_models"]
-                + self.api_helper.models["openai_models"]
-            ):
+            else:
                 return response
         except Exception as e:
             raise Exception(f"An unexpected error occurred at _handle_response: {e}") from e
@@ -128,11 +125,7 @@ class _ChatHelper:
                     if chunk:
                         yield chunk
 
-            elif self.model_name in (
-                self.api_helper.models["gemini_models"]
-                + self.api_helper.models["grok_models"]
-                + self.api_helper.models["openai_models"]
-            ):
+            else:
                 for chunk in response:
                     if chunk:
                         yield chunk
