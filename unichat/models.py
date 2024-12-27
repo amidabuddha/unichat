@@ -46,5 +46,6 @@ MODELS_MAX_TOKEN =  {
     "gemini-1.5-pro": 8192,
     "gemini-2.0-flash-exp": 8192,
     "gemini-2.0-flash-thinking-exp": 8192,
-    "gemini-exp-1206": 8192
+    "gemini-exp-1206": 8192,
+    "deepseek-chat": 8192
 }
