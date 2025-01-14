@@ -6,7 +6,8 @@ MODELS_LIST =  {
     ],
     "mistral_models": [
         "mistral-small-latest",
-        "mistral-large-latest"
+        "mistral-large-latest",
+        "codestral-latest"
     ],
     "openai_models": [
         "chatgpt-4o-latest",
