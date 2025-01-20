@@ -29,7 +29,8 @@ MODELS_LIST =  {
         "gemini-exp-1206"
     ],
     "deepseek_models": [
-        "deepseek-chat"
+        "deepseek-chat",
+        "deepseek-reasoner"
     ]
 }
 MODELS_MAX_TOKEN =  {
@@ -52,5 +53,6 @@ MODELS_MAX_TOKEN =  {
     "gemini-2.0-flash-exp": 8192,
     "gemini-2.0-flash-thinking-exp": 8192,
     "gemini-exp-1206": 8192,
-    "deepseek-chat": 8192
+    "deepseek-chat": 8192,
+    "deepseek-reasoner": 8192
 }
