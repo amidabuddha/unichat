@@ -71,7 +71,6 @@ class _ChatHelper:
             elif self.model_name in (
                 self.api_helper.models["gemini_models"]
                 + self.api_helper.models["grok_models"]
-                + self.api_helper.models["deepseek_models"]
                 + self.api_helper.models["openai_models"]
             ):
                 params = {
@@ -82,6 +81,21 @@ class _ChatHelper:
                 }
 
                 if self.tools and not self.model_name.startswith("o1"):
+                    params["tools"] = self.api_helper.transform_tools(self.tools)
+
+                response = self.client.chat.completions.create(**params)
+
+            elif self.model_name in (
+                self.api_helper.models["deepseek_models"]
+            ):
+                params = {
+                    "model": self.model_name,
+                    "messages": self.messages,
+                    "stream": self.stream,
+                }
+                if not self.model_name.endswith("reasoner"):
+                    params["temperature"] = self.temperature
+                if self.tools and not self.model_name.endswith("reasoner"):
                     params["tools"] = self.api_helper.transform_tools(self.tools)
 
                 response = self.client.chat.completions.create(**params)
