@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "unichat"
-version = "3.4.0"
+version = "3.4.1"
 authors = [
     { name = "Stefan", email = "versed_info0w@icloud.com" },
 ]
-description = "Universal API chat Python client for OpenAI, MistralAI, Anthropic, xAI, Google AI and DeepSeek."
+description = "Universal API chat Python client for OpenAI, MistralAI, Anthropic, xAI, Google AI, DeepSeek and Alibaba."
 readme = "README.md"
 requires-python = ">=3.6"
 license = {file = "LICENSE"}
