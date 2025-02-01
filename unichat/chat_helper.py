@@ -72,6 +72,7 @@ class _ChatHelper:
                 self.api_helper.models["gemini_models"]
                 + self.api_helper.models["grok_models"]
                 + self.api_helper.models["openai_models"]
+                + self.api_helper.models["alibaba_models"]
             ):
                 params = {
                     "model": self.model_name,
