@@ -16,7 +16,8 @@ MODELS_LIST =  {
         "gpt-4o-2024-11-20",
         "o1-mini",
         "o1-preview",
-        "o1"
+        "o1",
+        "o3-mini"
     ],
     "grok_models": [
         "grok-beta"
@@ -46,6 +47,7 @@ MODELS_MAX_TOKEN =  {
     "o1-mini": 65536,
     "o1-preview": 32768,
     "o1": 100000,
+    "o3-mini": 100000,
     "mistral-small-latest": 32000,
     "mistral-large-latest": 128000,
     "codestral-latest": 256000,
