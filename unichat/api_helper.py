@@ -53,14 +53,14 @@ class _ApiHelper:
         if model_name in self.models["anthropic_models"]:
             role = conversation[0]["content"] if conversation[0]["role"] == "system" else ""
             conversation = [message for message in conversation if message["role"] != "system"]
-        elif model_name.startswith("o1"):
+        elif model_name.startswith("o1") or model_name.startswith("o3"):
             if conversation[0]["role"] == "system":
-                if model_name == "o1":
-                    conversation[0]["role"] = "developer"
-                else:
+                if model_name in ("o1-mini", "o1-prewiew"):
                     system_content = conversation[0]["content"]
                     conversation[1]["content"] = f"{system_content}\n\n{conversation[1]['content']}"
                     conversation = [message for message in conversation if message["role"] != "system"]
+                else:
+                    conversation[0]["role"] = "developer"
 
         client = self._get_client(model_name)
         return client, conversation, role
