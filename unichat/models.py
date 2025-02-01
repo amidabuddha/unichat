@@ -20,7 +20,8 @@ MODELS_LIST =  {
         "o3-mini"
     ],
     "grok_models": [
-        "grok-beta"
+        "grok-2-latest",
+        "grok-2-vision-latest"
     ],
     "gemini_models": [
         "gemini-1.5-flash",
@@ -54,7 +55,8 @@ MODELS_MAX_TOKEN =  {
     "claude-3-5-haiku-latest": 8192,
     "claude-3-5-sonnet-latest": 8192,
     "claude-3-opus-latest": 4096,
-    "grok-beta": 131072,
+    "grok-2-latest": 131072,
+    "grok-2-vision-latest": 32768,
     "gemini-1.5-flash": 8192,
     "gemini-1.5-pro": 8192,
     "gemini-2.0-flash-exp": 8192,
