@@ -61,6 +61,8 @@ class _ApiHelper:
                     conversation = [message for message in conversation if message["role"] != "system"]
                 else:
                     conversation[0]["role"] = "developer"
+                    conversation[0]["content"] = "Formatting re-enabled\n" + conversation[0]["content"]
+
 
         client = self._get_client(model_name)
         return client, conversation, role
