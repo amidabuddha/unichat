@@ -18,9 +18,9 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "anthropic~=0.45.2",
+    "anthropic~=0.47.0",
     "mistralai~=1.5.0",
-    "openai~=1.61.0",
+    "openai~=1.64.0",
 ]
 
 [project.urls]
