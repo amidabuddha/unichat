@@ -1,13 +1,14 @@
 MODELS_LIST =  {
     "anthropic_models": [
         "claude-3-5-haiku-latest",
-        "claude-3-5-sonnet-latest",
+        "claude-3-7-sonnet-latest",
         "claude-3-opus-latest"
     ],
     "mistral_models": [
         "mistral-small-latest",
         "mistral-large-latest",
-        "codestral-latest"
+        "codestral-latest",
+        "pixtral-large-latest"
     ],
     "openai_models": [
         "chatgpt-4o-latest",
@@ -51,8 +52,9 @@ MODELS_MAX_TOKEN =  {
     "mistral-small-latest": 32000,
     "mistral-large-latest": 128000,
     "codestral-latest": 256000,
+    "pixtral-large-latest": 128000,
     "claude-3-5-haiku-latest": 8192,
-    "claude-3-5-sonnet-latest": 8192,
+    "claude-3-7-sonnet-latest": 8192,
     "claude-3-opus-latest": 4096,
     "grok-2-latest": 131072,
     "grok-2-vision-latest": 32768,
