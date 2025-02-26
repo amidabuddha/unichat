@@ -47,8 +47,6 @@ def get_calculation(tool_call):
 
 def handle_streaming_response(response_stream, conversation):
     """Handle streaming response and tool calls."""
-    if conversation[-1]['role'] != "tool":
-        print("\nAssistant: ", end="")
 
     current_content = ""
     current_assistant_message = {
@@ -56,16 +54,33 @@ def handle_streaming_response(response_stream, conversation):
         "content": "",
     }
 
+    # Flags to track if labels have been printed
+    printed_reasoning_label = False
+    printed_assistant_label = False
+
     last_tool_call_index = -1
 
     for chunk in response_stream:
         delta = chunk.choices[0].delta
         finish_reason = chunk.choices[0].finish_reason
 
+        # Handle reasoning_content
+        if hasattr(delta, 'reasoning_content') and delta.reasoning_content:
+            if not printed_reasoning_label:
+                print("\nAssistant Reasoning: ", end="")
+                printed_reasoning_label = True
+            print(delta.reasoning_content, end="")
+
+        # Handle content
         if hasattr(delta, 'content') and delta.content:
+            if not printed_assistant_label:
+                if printed_reasoning_label:
+                    print("\n", end="")  # Add newline to separate from reasoning
+                print("\nAssistant: ", end="")
+                printed_assistant_label = True
+            print(delta.content, end="")
             current_content += delta.content
             current_assistant_message['content'] = current_content
-            print(delta.content, end="")
 
         # Handle tool calls
         if hasattr(delta, 'tool_calls') and delta.tool_calls:

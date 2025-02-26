@@ -15,6 +15,7 @@ class _ApiHelper:
         self.models = MODELS_LIST
         self.max_tokens = MODELS_MAX_TOKEN
         self.api_client = None
+        self.anthropic_conversation = []
 
     def _get_max_tokens(self, model_name: str) -> int:
         return self.max_tokens.get(model_name, self.DEFAULT_MAX_TOKENS)
@@ -187,8 +188,10 @@ class _ApiHelper:
 
     def convert_claude_to_gpt(self, claude_response: object) -> object:
         text_content = []
+        reasoning_content = ""
         tool_calls = []
         has_tool_use = False
+        reasoning = False
 
         if hasattr(claude_response, "content") and isinstance(claude_response.content, list):
             for block in claude_response.content:
@@ -214,12 +217,18 @@ class _ApiHelper:
                             "function": function_obj
                         })
                         tool_calls.append(tool_call)
+                    elif getattr(block, "type", None) == "thinking":
+                        reasoning = True
+                        reasoning_content = getattr(block, "thinking", "")
+                        print("Reasoning: ", reasoning_content)
 
         # Create message dictionary with all attributes
         message_dict = {
             "role": getattr(claude_response, "role", "assistant"),
             "content": "".join(text_content) if text_content else None,
         }
+        if reasoning:
+            message_dict["reasoning_content"] = reasoning_content
 
         # Only include tool_calls in the message dictionary if there was a tool_use block
         if has_tool_use:
@@ -366,6 +375,18 @@ class _ApiHelper:
                             "finish_reason": None
                         })]
                     })
+                elif getattr(delta, "type") == "thinking_delta":
+                    yield type('obj', (object,), {
+                        "object": "chat.completion.chunk",
+                        "choices": [type('obj', (object,), {
+                            "index": 0,
+                            "delta": type('obj', (object,), {
+                                "reasoning_content": getattr(delta, "thinking")
+                            }),
+                            "logprobs": None,
+                            "finish_reason": None
+                        })]
+                    })
                 elif getattr(delta, "type") == "input_json_delta":
                     yield type('obj', (object,), {
                         "object": "chat.completion.chunk",
@@ -506,3 +527,41 @@ class _ApiHelper:
                 result.append(message)
 
         return list(reversed(result))
+
+    def collect_content_chunks(self, response):
+        collected_content = []
+
+        for event in response:
+            event_type = getattr(event, "type")  # Safely get the event type
+
+            if event_type == "message_start":
+                message = getattr(event, "message")
+                print(f"Message started: ID={getattr(message, 'id')}, Model={getattr(message, 'model')}")
+
+            elif event_type == "content_block_start":
+                content_block = getattr(event, "content_block")
+                block_type = getattr(content_block, "type")
+                block_data = {"type": block_type}
+                if block_type == "tool_use":
+                    block_data["tool_id"] = getattr(content_block, "id")
+                    block_data["tool_name"] = getattr(content_block, "name")
+                collected_content.append(block_data)
+
+            elif event_type == "content_block_delta":
+                delta = getattr(event, "delta")
+                delta_type = getattr(delta, "type")
+                # Assuming we update the last block in collected_content
+                if collected_content:
+                    current_block = collected_content[-1]
+                    if delta_type == "text_delta":
+                        current_block["text"] = current_block.get("text", "") + getattr(delta, "text")
+                    elif delta_type == "thinking_delta":
+                        current_block["thinking"] = current_block.get("thinking", "") + getattr(delta, "thinking")
+
+            elif event_type == "message_delta":
+                delta = getattr(event, "delta")
+                if hasattr(delta, "stop_reason"):
+                    stop_reason = getattr(delta, "stop_reason")
+                    print(f"Message stopped with reason: {stop_reason}")
+
+        return collected_content
