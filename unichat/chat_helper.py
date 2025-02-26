@@ -45,6 +45,8 @@ class _ChatHelper:
             elif self.model_name in self.api_helper.models["anthropic_models"]:
                 self.temperature = 1 if self.temperature > 1 else self.temperature
                 anthropic_messages = self.api_helper.transform_messages(self.messages)
+                if not self.api_helper.anthropic_conversation:
+                    self.api_helper.anthropic_conversation.append(anthropic_messages)
                 # DEBUG
                 # print(f"last_anthropic_message: {self.api_helper.anthropic_conversation}")
                 # print(f"anthropic_messages: {anthropic_messages}")
@@ -115,7 +117,7 @@ class _ChatHelper:
             if self.model_name in self.api_helper.models["anthropic_models"]:
                 self.api_helper.anthropic_conversation.append({
                     "role": "assistant",
-                    "content": response["content"]})
+                    "content": response.content})
                 return self.api_helper.convert_claude_to_gpt(response)
             elif self.model_name in self.api_helper.models["mistral_models"]:
                 return self.api_helper.transform_response(response)
