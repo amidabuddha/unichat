@@ -139,7 +139,7 @@ def handle_non_streaming_response(response, conversation):
 
     # Handle reasoning content
     reasoning_content = getattr(message, 'reasoning_content', None)
-    if content:
+    if reasoning_content:
         assistant_response['reasoning_content'] = reasoning_content
         print("\nAssistant Reasoning: ", reasoning_content)
 
@@ -253,7 +253,8 @@ def main():
                     response_stream = client.chat.completions.create(
                         model=model_name,
                         messages=conversation,
-                        tools=tools
+                        tools=tools,
+                        thinking=True
                     )
                     handle_streaming_response(response_stream, conversation)
                 else:
@@ -261,7 +262,8 @@ def main():
                         model=model_name,
                         messages=conversation,
                         tools=tools,
-                        stream=False
+                        stream=False,
+                        thinking=True
                     )
                     handle_non_streaming_response(response, conversation)
 
