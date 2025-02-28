@@ -137,11 +137,17 @@ def handle_non_streaming_response(response, conversation):
     # Safely get tool_calls
     tool_calls = getattr(message, 'tool_calls', None)
 
+    # Handle reasoning content
+    reasoning_content = getattr(message, 'reasoning_content', None)
+    if content:
+        assistant_response['reasoning_content'] = reasoning_content
+        print("\nAssistant Reasoning: ", reasoning_content)
+
     # Handle content
     content = getattr(message, 'content', None)
     if content:
         assistant_response['content'] = content
-        print("\nAssistant:", content)
+        print("\nAssistant: ", content)
 
     # Handle tool calls if they exist
     if tool_calls:

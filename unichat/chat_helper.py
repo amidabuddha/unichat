@@ -14,6 +14,7 @@ class _ChatHelper:
         tools: Optional[List[dict]] = None,
         stream: bool = False,
         cached: Union[bool, str] = False,
+        thinking: bool = False,
         client: Any = None,
         role: str = ""
     ):
@@ -24,6 +25,7 @@ class _ChatHelper:
         self.tools = tools or []
         self.stream = stream
         self.cached = cached
+        self.thinking = thinking
         self.client = client
         self.role = role
 
@@ -44,13 +46,12 @@ class _ChatHelper:
                     response = self.client.chat.complete(**mistral_params)
 
             elif self.model_name in self.api_helper.models["anthropic_models"]:
-                self.temperature = 1 if self.temperature > 1 else self.temperature
                 anthropic_messages = self.api_helper.transform_messages(self.messages)
                 self.api_helper.anthropic_conversation.append(anthropic_messages[-1])
                 anthropic_params = {
                     "model": self.model_name,
                     "max_tokens": self.api_helper._get_max_tokens(self.model_name),
-                    "temperature": self.temperature,
+                    "temperature": 1 if self.thinking else min(self.temperature, 1),
                     "stream": self.stream,
                 }
 
@@ -66,7 +67,7 @@ class _ChatHelper:
                         {"type": "text", "text": self.cached, "cache_control": {"type": "ephemeral"}},
                     ]
 
-                if self.model_name == "claude-3-7-sonnet-latest":
+                if self.thinking:
                     anthropic_params["thinking"] = {"type": "enabled", "budget_tokens": int(anthropic_params["max_tokens"]*0.9)}
 
                 anthropic_params["messages"] = self.api_helper.cache_messages(self.api_helper.anthropic_conversation)

@@ -220,7 +220,6 @@ class _ApiHelper:
                     elif getattr(block, "type", None) == "thinking":
                         reasoning = True
                         reasoning_content = getattr(block, "thinking", "")
-                        print("Reasoning: ", reasoning_content)
 
         # Create message dictionary with all attributes
         message_dict = {

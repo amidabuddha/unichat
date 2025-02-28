@@ -28,6 +28,7 @@ class UnifiedChatApi:
                 tools: Optional[List[dict]] = None,
                 stream: bool = True,
                 cached: Union[bool, str] = False,
+                thinking: bool = False,
             ) -> Union[Generator, str]:
                 """
                 Get chat completion from various AI models.
@@ -66,6 +67,7 @@ class UnifiedChatApi:
                     tools,
                     stream,
                     cached,
+                    thinking,
                     client,
                     role
                 )
