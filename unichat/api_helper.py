@@ -140,7 +140,7 @@ class _ApiHelper:
             "type": "tool_use",
             "id": call.get("id", ""),
             "name": call.get("function", {}).get("name", ""),
-            "input": json.loads(call.get("function", {}).get("arguments", "{}"))
+            "input": json.loads(call.get("function", {}).get("arguments", "{}")) if call.get("function", {}).get("arguments", "{}") else ""
         } for call in tool_calls]
 
     def transform_messages(self, messages: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
