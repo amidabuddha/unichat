@@ -144,7 +144,6 @@ class _ChatHelper:
                         try:
                             block["input"] = json.loads(block["input"])
                         except json.JSONDecodeError:
-                            print(f"Failed to parse input for tool_use block {block.get('id', 'unknown')}")
                             block["input"] = {}
                 self.api_helper.anthropic_conversation.append(message)
 
