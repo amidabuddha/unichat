@@ -315,13 +315,13 @@ class _ApiHelper:
         return transformed
 
     def transform_stream(self, response: object) -> object:
-        """Transform Claude's streaming response to OpenAI format."""
+        """Transform Claude's streaming response to OpenAI format and yield both transformed chunk and original block."""
         for chunk in response:
             chunk_type = getattr(chunk, "type")
 
             if chunk_type == "message_start":
                 message = getattr(chunk, "message")
-                yield type('obj', (object,), {
+                transformed_chunk = type('obj', (object,), {
                     "id": getattr(message, "id"),
                     "object": "chat.completion.chunk",
                     "created": int(time.time()),
@@ -337,21 +337,22 @@ class _ApiHelper:
                         "finish_reason": None
                     })]
                 })
+                yield transformed_chunk, None  # No original block for message_start
 
             elif chunk_type == "content_block_start":
-                content_block = getattr(chunk, "content_block")
-                if getattr(content_block, "type") == "tool_use":
-                    yield type('obj', (object,), {
+                delta = getattr(chunk, "content_block")
+                if getattr(delta, "type") == "tool_use":
+                    transformed_chunk = type('obj', (object,), {
                         "object": "chat.completion.chunk",
                         "choices": [type('obj', (object,), {
                             "index": 0,
                             "delta": type('obj', (object,), {
                                 "tool_calls": [type('obj', (object,), {
                                     "index": 0,
-                                    "id": getattr(content_block, "id"),
+                                    "id": getattr(delta, "id"),
                                     "type": "function",
                                     "function": type('obj', (object,), {
-                                        "name": getattr(content_block, "name"),
+                                        "name": getattr(delta, "name"),
                                         "arguments": ""
                                     })
                                 })]
@@ -360,11 +361,31 @@ class _ApiHelper:
                             "finish_reason": None
                         })]
                     })
+                    original_block = type('obj', (object,), {
+                        "role": "assistant",
+                        "content": [{
+                            "type": "tool_use",
+                            "id": getattr(delta, "id"),
+                            "name": getattr(delta, "name"),
+                            "input": ""
+                        }]
+                    })
+                    yield transformed_chunk, original_block
+                if getattr(delta, "type") == "redacted_thinking":
+                    original_block = type('obj', (object,), {
+                        "role": "assistant",
+                        "content": [{
+                            "type": "redacted_thinking",
+                            "data": getattr(delta, "data"),
+                        }]
+                    })
+                    yield None, original_block
 
             elif chunk_type == "content_block_delta":
                 delta = getattr(chunk, "delta")
+
                 if getattr(delta, "type") == "text_delta":
-                    yield type('obj', (object,), {
+                    transformed_chunk = type('obj', (object,), {
                         "object": "chat.completion.chunk",
                         "choices": [type('obj', (object,), {
                             "index": 0,
@@ -375,8 +396,16 @@ class _ApiHelper:
                             "finish_reason": None
                         })]
                     })
+                    original_block = type('obj', (object,), {
+                        "role": "assistant",
+                        "content": [{
+                            "type": "text",
+                            "text": getattr(delta, "text")
+                        }]
+                    })
+                    yield transformed_chunk, original_block
                 elif getattr(delta, "type") == "thinking_delta":
-                    yield type('obj', (object,), {
+                    transformed_chunk = type('obj', (object,), {
                         "object": "chat.completion.chunk",
                         "choices": [type('obj', (object,), {
                             "index": 0,
@@ -387,8 +416,27 @@ class _ApiHelper:
                             "finish_reason": None
                         })]
                     })
+                    original_block = type('obj', (object,), {
+                        "role": "assistant",
+                        "content": [{
+                            "type": "thinking",
+                            "thinking": getattr(delta, "thinking"),
+                            "signature": ""
+                        }]
+                    })
+                    yield transformed_chunk, original_block
+                elif getattr(delta, "type") == "signature_delta":
+                    original_block = type('obj', (object,), {
+                        "role": "assistant",
+                        "content": [{
+                            "type": "thinking",
+                            "thinking": "",
+                            "signature": getattr(delta, "signature"),
+                        }]
+                    })
+                    yield None, original_block
                 elif getattr(delta, "type") == "input_json_delta":
-                    yield type('obj', (object,), {
+                    transformed_chunk = type('obj', (object,), {
                         "object": "chat.completion.chunk",
                         "choices": [type('obj', (object,), {
                             "index": 0,
@@ -403,15 +451,25 @@ class _ApiHelper:
                             "finish_reason": None
                         })]
                     })
+                    original_block = type('obj', (object,), {
+                        "role": "assistant",
+                        "content": [{
+                            "type": "tool_use",
+                            "id:": "",
+                            "name": "",
+                            "input": getattr(delta, "partial_json")
+                        }]
+                    })
+                    yield transformed_chunk, original_block
 
             elif chunk_type == "message_delta":
                 delta = getattr(chunk, "delta")
                 if hasattr(delta, "stop_reason"):
                     stop_reason = getattr(delta, "stop_reason")
                     finish_reason = ("tool_calls" if stop_reason == "tool_use" else
-                                "stop" if stop_reason == "end_turn" else
-                                stop_reason)
-                    yield type('obj', (object,), {
+                                    "stop" if stop_reason == "end_turn" else
+                                    stop_reason)
+                    transformed_chunk = type('obj', (object,), {
                         "object": "chat.completion.chunk",
                         "choices": [type('obj', (object,), {
                             "index": 0,
@@ -420,6 +478,7 @@ class _ApiHelper:
                             "finish_reason": finish_reason
                         })]
                     })
+                    yield transformed_chunk, None  # No original block for message_delta
 
     def transform_stream_chunk(self, stream: Iterator[Any]) -> Generator[object, None, None]:
         """Transform stream chunks to standard format."""
@@ -528,40 +587,83 @@ class _ApiHelper:
 
         return list(reversed(result))
 
-    def collect_content_chunks(self, response):
-        collected_content = []
+    def block_to_dict(self, block):
+        # Parse Claude content blocks to dictionary
+        if isinstance(block, anthropic.types.ThinkingBlock):
+            return {
+                "signature": block.signature,
+                "thinking": block.thinking,
+                "type": "thinking"
+            }
+        elif isinstance(block, anthropic.types.RedactedThinkingBlock):
+            return {
+                "data": block.signature,
+                "type": "redacted_thinking"
+            }
+        elif isinstance(block, anthropic.types.ToolUseBlock):
+            return {
+                "id": block.id,
+                "name": block.name,
+                "type": "tool_use",
+                "input": block.input
+            }
+        elif isinstance(block, anthropic.types.TextBlock):
+            return {
+                "text": block.text,
+                "type": "text"
+            }
 
-        for event in response:
-            event_type = getattr(event, "type")  # Safely get the event type
+    def append_block_to_message(self, message, block):
+        block_content = block.content[0]
+        block_type = block_content["type"]
 
-            if event_type == "message_start":
-                message = getattr(event, "message")
-                print(f"Message started: ID={getattr(message, 'id')}, Model={getattr(message, 'model')}")
+        if block_type == "tool_use":
+            # If the block has an id, create a new tool_use block
+            if "id" in block_content and block_content["id"]:
+                new_block = {
+                    "type": "tool_use",
+                    "id": block_content["id"],
+                    "name": block_content["name"],
+                    "input": block_content["input"]
+                }
+                message["content"].append(new_block)
+            # If no id, append input to the last tool_use block
+            elif message["content"] and message["content"][-1]["type"] == "tool_use":
+                message["content"][-1]["input"] += block_content["input"]
 
-            elif event_type == "content_block_start":
-                content_block = getattr(event, "content_block")
-                block_type = getattr(content_block, "type")
-                block_data = {"type": block_type}
-                if block_type == "tool_use":
-                    block_data["tool_id"] = getattr(content_block, "id")
-                    block_data["tool_name"] = getattr(content_block, "name")
-                collected_content.append(block_data)
+        if block_type == "thinking":
+            # Merge with the last "thinking" block if it exists
+            if message["content"] and message["content"][-1]["type"] == "thinking":
+                last_block = message["content"][-1]
+                # Append thinking content if present
+                if "thinking" in block_content and block_content["thinking"]:
+                    last_block["thinking"] += block_content["thinking"]
+                # Set signature if present
+                if "signature" in block_content and block_content["signature"]:
+                    last_block["signature"] = block_content["signature"]
+            else:
+                # Create a new "thinking" block
+                new_block = {
+                    "type": "thinking",
+                    "thinking": block_content.get("thinking", ""),
+                    "signature": block_content.get("signature", "")
+                }
+                message["content"].append(new_block)
 
-            elif event_type == "content_block_delta":
-                delta = getattr(event, "delta")
-                delta_type = getattr(delta, "type")
-                # Assuming we update the last block in collected_content
-                if collected_content:
-                    current_block = collected_content[-1]
-                    if delta_type == "text_delta":
-                        current_block["text"] = current_block.get("text", "") + getattr(delta, "text")
-                    elif delta_type == "thinking_delta":
-                        current_block["thinking"] = current_block.get("thinking", "") + getattr(delta, "thinking")
+        elif block_type == "text":
+            # Merge with the last "text" block if it exists
+            if message["content"] and message["content"][-1]["type"] == "text":
+                message["content"][-1]["text"] += block_content["text"]
+            else:
+                # Create a new "text" block
+                new_block = {
+                    "type": "text",
+                    "text": block_content["text"]
+                }
+                message["content"].append(new_block)
 
-            elif event_type == "message_delta":
-                delta = getattr(event, "delta")
-                if hasattr(delta, "stop_reason"):
-                    stop_reason = getattr(delta, "stop_reason")
-                    print(f"Message stopped with reason: {stop_reason}")
+        elif block_type == "redacted_thinking":
+            # Add "redacted_thinking" as a standalone block
+            message["content"].append(block_content)
 
-        return collected_content
+        return message
