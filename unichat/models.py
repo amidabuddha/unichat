@@ -31,7 +31,7 @@ MODELS_LIST =  {
         "gemini-2.0-flash-lite-preview-02-05",
         "gemini-2.0-flash",
         "gemini-2.0-flash-thinking-exp",
-        "gemini-2.0-pro-exp-02-05"
+        "gemini-2.5-pro-exp-03-25"
     ],
     "deepseek_models": [
         "deepseek-chat",
@@ -66,7 +66,7 @@ MODELS_MAX_TOKEN =  {
     "gemini-2.0-flash-lite-preview-02-05": 8192,
     "gemini-2.0-flash": 8192,
     "gemini-2.0-flash-thinking-exp": 8192,
-    "gemini-2.0-pro-exp-02-05": 8192,
+    "gemini-2.5-pro-exp-03-25": 8192,
     "deepseek-chat": 8192,
     "deepseek-reasoner": 8192,
     "qwen-turbo-latest": 8192,
