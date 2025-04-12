@@ -7,14 +7,14 @@ MODELS_LIST =  {
         "claude-3-opus-latest"
     ],
     "mistral_models": [
-        "mistral-small-latest",
+        "mistral-saba-latest",
         "mistral-large-latest",
         "codestral-latest",
         "pixtral-large-latest"
     ],
     "openai_models": [
-        "chatgpt-4o-latest",
         "gpt-4o-mini",
+        "chatgpt-4o-latest",
         "gpt-4o",
         "gpt-4o-2024-11-20",
         "gpt-4.5-preview",
@@ -24,14 +24,18 @@ MODELS_LIST =  {
         "o3-mini"
     ],
     "grok_models": [
-        "grok-2-latest",
+        "grok-3-latest",
+        "grok-3-fast-latest",
+        "grok-3-mini-latest",
+        "grok-3-mini-fast-latest",
         "grok-2-vision-latest"
     ],
     "gemini_models": [
-        "gemini-2.0-flash-lite-preview-02-05",
+        "gemini-2.0-flash-lite",
         "gemini-2.0-flash",
         "gemini-2.0-flash-thinking-exp",
-        "gemini-2.5-pro-exp-03-25"
+        "gemini-2.5-pro-exp-03-25",
+        "gemini-2.5-pro-preview-03-25"
     ],
     "deepseek_models": [
         "deepseek-chat",
@@ -44,8 +48,8 @@ MODELS_LIST =  {
     ]
 }
 MODELS_MAX_TOKEN =  {
-    "chatgpt-4o-latest": 16384,
     "gpt-4o-mini": 16384,
+    "chatgpt-4o-latest": 16384,
     "gpt-4o": 16384,
     "gpt-4o-2024-11-20": 16384,
     "gpt-4.5-preview": 16384,
@@ -53,23 +57,29 @@ MODELS_MAX_TOKEN =  {
     "o1-preview": 32768,
     "o1": 100000,
     "o3-mini": 100000,
-    "mistral-small-latest": 32000,
+    "mistral-saba-latest": 32000,
     "mistral-large-latest": 128000,
     "codestral-latest": 256000,
     "pixtral-large-latest": 128000,
     "claude-3-5-haiku-latest": 8192,
     "claude-3-5-sonnet-latest": 8192,
-    "claude-3-7-sonnet-latest": 8192,
+    "claude-3-7-sonnet-latest": 64000,
     "claude-3-opus-latest": 4096,
-    "grok-2-latest": 131072,
+    "grok-3-latest": 131072,
+    "grok-3-fast-latest": 131072,
+    "grok-3-mini-latest": 131072,
+    "grok-3-mini-fast-latest": 131072,
     "grok-2-vision-latest": 32768,
-    "gemini-2.0-flash-lite-preview-02-05": 8192,
+    "gemini-2.0-flash-lite": 8192,
     "gemini-2.0-flash": 8192,
     "gemini-2.0-flash-thinking-exp": 8192,
     "gemini-2.5-pro-exp-03-25": 8192,
+    "gemini-2.5-pro-preview-03-25": 8192,
     "deepseek-chat": 8192,
     "deepseek-reasoner": 8192,
     "qwen-turbo-latest": 8192,
     "qwen-plus-latest": 8192,
-    "qwen-max-latest": 8192
+    "qwen-max-latest": 8192,
+    "qwq-plus": 8192,
+    "mercury-coder-small": 32000
 }
