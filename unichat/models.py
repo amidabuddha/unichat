@@ -44,7 +44,12 @@ MODELS_LIST =  {
     "alibaba_models": [
         "qwen-turbo-latest",
         "qwen-plus-latest",
-        "qwen-max-latest"
+        "qwen-max-latest",
+        "qwq-plus"
+    ],
+    "inception_models": [
+        "mercury-coder-small",
+        "mercury-coder-mini"
     ]
 }
 MODELS_MAX_TOKEN =  {
@@ -81,5 +86,6 @@ MODELS_MAX_TOKEN =  {
     "qwen-plus-latest": 8192,
     "qwen-max-latest": 8192,
     "qwq-plus": 8192,
-    "mercury-coder-small": 32000
+    "mercury-coder-small": 32000,
+    "mercury-coder-mini": 32000
 }
