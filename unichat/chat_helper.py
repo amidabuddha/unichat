@@ -80,6 +80,7 @@ class _ChatHelper:
                 + self.api_helper.models["openai_models"]
                 + self.api_helper.models["deepseek_models"]
                 + self.api_helper.models["alibaba_models"]
+                + self.api_helper.models["inception_models"]
             ):
                 params = {
                     "model": self.model_name,
@@ -90,7 +91,7 @@ class _ChatHelper:
                     params["temperature"] = self.temperature
                 if self.tools and self.model_name not in ("o1-preview", "o1-mini") and not self.model_name.endswith("reasoner"):
                     params["tools"] = self.api_helper.transform_tools(self.tools)
-                if self.model_name == "o3-mini":
+                if self.model_name == "o3-mini" or self.model_name.startswith("grok-3-mini"):
                     params["reasoning_effort"] = "high"
 
                 response = self.client.chat.completions.create(**params)
