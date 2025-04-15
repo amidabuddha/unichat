@@ -13,11 +13,13 @@ MODELS_LIST =  {
         "pixtral-large-latest"
     ],
     "openai_models": [
+        "gpt-4.1-nano",
+        "gpt-4.1-mini",
         "gpt-4o-mini",
-        "chatgpt-4o-latest",
         "gpt-4o",
         "gpt-4o-2024-11-20",
-        "gpt-4.5-preview",
+        "chatgpt-4o-latest",
+        "gpt-4.1",
         "o1-mini",
         "o1-preview",
         "o1",
@@ -53,11 +55,13 @@ MODELS_LIST =  {
     ]
 }
 MODELS_MAX_TOKEN =  {
+    "gpt-4.1-nano": 32768,
+    "gpt-4.1-mini": 32768,
     "gpt-4o-mini": 16384,
-    "chatgpt-4o-latest": 16384,
     "gpt-4o": 16384,
     "gpt-4o-2024-11-20": 16384,
-    "gpt-4.5-preview": 16384,
+    "chatgpt-4o-latest": 16384,
+    "gpt-4.1": 32768,
     "o1-mini": 65536,
     "o1-preview": 32768,
     "o1": 100000,
