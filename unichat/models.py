@@ -23,7 +23,8 @@ MODELS_LIST =  {
         "o1-mini",
         "o1-preview",
         "o1",
-        "o3-mini"
+        "o3-mini",
+        "o3"
     ],
     "grok_models": [
         "grok-3-latest",
@@ -66,6 +67,8 @@ MODELS_MAX_TOKEN =  {
     "o1-preview": 32768,
     "o1": 100000,
     "o3-mini": 100000,
+    "o3": 100000,
+    "o4-mini": 100000,
     "mistral-saba-latest": 32000,
     "mistral-large-latest": 128000,
     "codestral-latest": 256000,
