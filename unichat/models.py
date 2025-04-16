@@ -24,7 +24,8 @@ MODELS_LIST =  {
         "o1-preview",
         "o1",
         "o3-mini",
-        "o3"
+        "o3",
+        "o4-mini"
     ],
     "grok_models": [
         "grok-3-latest",

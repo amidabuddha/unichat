@@ -68,7 +68,7 @@ class _ChatHelper:
                     ]
 
                 if self.thinking:
-                    anthropic_params["thinking"] = {"type": "enabled", "budget_tokens": int(anthropic_params["max_tokens"]*0.9)}
+                    anthropic_params["thinking"] = {"type": "enabled", "budget_tokens": int(anthropic_params["max_tokens"]*0.5)}
 
                 anthropic_params["messages"] = self.api_helper.cache_messages(self.api_helper.anthropic_conversation)
 
@@ -87,11 +87,11 @@ class _ChatHelper:
                     "messages": self.messages,
                     "stream": self.stream,
                 }
-                if self.model_name not in ("o1", "o3-mini") and not self.model_name.endswith("reasoner") and not self.model_name.startswith("mercury"):
+                if self.model_name not in ("o1", "o3-mini", "o3", "o4-mini") and not self.model_name.endswith("reasoner") and not self.model_name.startswith("mercury"):
                     params["temperature"] = self.temperature
                 if self.tools and self.model_name not in ("o1-preview", "o1-mini") and not self.model_name.endswith("reasoner"):
                     params["tools"] = self.api_helper.transform_tools(self.tools)
-                if self.model_name == "o3-mini" or self.model_name.startswith("grok-3-mini"):
+                if self.model_name in ("o1", "o3-mini", "o3", "o4-mini") or self.model_name.startswith("grok-3-mini"):
                     params["reasoning_effort"] = "high"
 
                 response = self.client.chat.completions.create(**params)
