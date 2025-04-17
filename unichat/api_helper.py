@@ -27,7 +27,9 @@ class _ApiHelper:
         if model_name in self.models["mistral_models"]:
             client = Mistral(api_key=self.api_key)
         elif model_name in self.models["anthropic_models"]:
-            client = anthropic.Anthropic(api_key=self.api_key)
+            # Timeout added as per https://github.com/anthropics/anthropic-sdk-python#long-requests
+            # To suppress the streaming error, cause they flag even "hi" as a long request, because of max_tokens.
+            client = anthropic.Anthropic(api_key=self.api_key, timeout=600)
         elif model_name in self.models["grok_models"]:
             client = openai.OpenAI(api_key=self.api_key, base_url="https://api.x.ai/v1")
         elif model_name in self.models["gemini_models"]:
