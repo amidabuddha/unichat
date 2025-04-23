@@ -58,7 +58,7 @@ class _ApiHelper:
         if model_name in self.models["anthropic_models"]:
             role = conversation[0]["content"] if conversation[0]["role"] == "system" else ""
             conversation = [message for message in conversation if message["role"] != "system"]
-        elif model_name in self.models["openai_models"] and not model_name.startswith("gpt-4o") or not model_name.startswith("chatgpt-4o"):
+        elif model_name in self.models["openai_models"] and (not model_name.startswith("gpt-4o") or not model_name.startswith("chatgpt-4o")):
             if conversation[0]["role"] == "system":
                 if model_name in ("o1-mini", "o1-prewiew"):
                     system_content = conversation[0]["content"]
