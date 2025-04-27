@@ -1,5 +1,6 @@
 import json
-from typing import Generator, List, Any, Optional, Union, Dict, Any
+from typing import Any, Dict, Generator, List, Optional, Union
+
 import anthropic
 import openai
 
@@ -14,7 +15,7 @@ class _ChatHelper:
         tools: Optional[List[dict]] = None,
         stream: bool = False,
         cached: Union[bool, str] = False,
-        thinking: bool = False,
+        reasoning_effort: Union[bool, str] = False,
         client: Any = None,
         role: str = ""
     ):
@@ -25,7 +26,7 @@ class _ChatHelper:
         self.tools = tools or []
         self.stream = stream
         self.cached = cached
-        self.thinking = thinking
+        self.reasoning_effort = reasoning_effort
         self.client = client
         self.role = role
 
@@ -51,7 +52,7 @@ class _ChatHelper:
                 anthropic_params = {
                     "model": self.model_name,
                     "max_tokens": self.api_helper._get_max_tokens(self.model_name),
-                    "temperature": 1 if self.thinking else min(self.temperature, 1),
+                    "temperature": 1 if self.reasoning_effort else min(self.temperature, 1),
                     "stream": self.stream,
                 }
 
@@ -67,8 +68,19 @@ class _ChatHelper:
                         {"type": "text", "text": self.cached, "cache_control": {"type": "ephemeral"}},
                     ]
 
-                if self.thinking:
-                    anthropic_params["thinking"] = {"type": "enabled", "budget_tokens": int(anthropic_params["max_tokens"]*0.5)}
+                match self.reasoning_effort:
+                    case "high":
+                        anthropic_params["thinking"] = {"type": "enabled", "budget_tokens": int(anthropic_params["max_tokens"]*0.8)}
+                    case "medium":
+                        anthropic_params["thinking"] = {"type": "enabled", "budget_tokens": int(anthropic_params["max_tokens"]*0.5)}
+                    case "low":
+                        anthropic_params["thinking"] = {"type": "enabled", "budget_tokens": int(anthropic_params["max_tokens"]*0.2)}
+                    case "none":
+                        pass
+                    case False:
+                        pass
+                    case _:
+                        raise ValueError(f"Invalid reasoning_effort value: {self.reasoning_effort}")
 
                 anthropic_params["messages"] = self.api_helper.cache_messages(self.api_helper.anthropic_conversation)
 
@@ -91,8 +103,8 @@ class _ChatHelper:
                     params["temperature"] = self.temperature
                 if self.tools and self.model_name not in ("o1-preview", "o1-mini") and not self.model_name.endswith("reasoner"):
                     params["tools"] = self.api_helper.transform_tools(self.tools)
-                if self.model_name in ("o1", "o3-mini", "o3", "o4-mini") or self.model_name.startswith("grok-3-mini"):
-                    params["reasoning_effort"] = "high"
+                if self.reasoning_effort:
+                    params["reasoning_effort"] = self.reasoning_effort
 
                 response = self.client.chat.completions.create(**params)
 

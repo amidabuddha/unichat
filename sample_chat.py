@@ -254,7 +254,7 @@ def main():
                         model=model_name,
                         messages=conversation,
                         tools=tools,
-                        thinking=True
+                        reasoning_effort = "medium"
                     )
                     handle_streaming_response(response_stream, conversation)
                 else:
@@ -263,7 +263,7 @@ def main():
                         messages=conversation,
                         tools=tools,
                         stream=False,
-                        thinking=True
+                        reasoning_effort = "medium"
                     )
                     handle_non_streaming_response(response, conversation)
 
