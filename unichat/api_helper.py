@@ -1,17 +1,20 @@
+import json
+import time
+from typing import Any, Dict, Generator, Iterator, List, Optional
+
 import anthropic
 import openai
 from mistralai import Mistral
-from typing import List, Dict, Any, Generator, Iterator
-import json
-import time
 
 from .models import MODELS_LIST, MODELS_MAX_TOKEN
+
 
 class _ApiHelper:
     DEFAULT_MAX_TOKENS = 4096
 
-    def __init__(self, api_key):
+    def __init__(self, api_key, base_url=None):
         self.api_key = api_key
+        self.base_url = base_url
         self.models = MODELS_LIST
         self.max_tokens = MODELS_MAX_TOKEN
         self.api_client = None
@@ -24,24 +27,19 @@ class _ApiHelper:
         if self.api_client is not None:
             return self.api_client
 
+        params = {"api_key": self.api_key}
+        if self.base_url:
+            params["base_url"] = self.base_url
+
         if model_name in self.models["mistral_models"]:
-            client = Mistral(api_key=self.api_key)
+            client = Mistral(**params)
         elif model_name in self.models["anthropic_models"]:
             # Timeout added as per https://github.com/anthropics/anthropic-sdk-python#long-requests
             # To suppress the streaming error, cause they flag even "hi" as a long request, because of max_tokens.
-            client = anthropic.Anthropic(api_key=self.api_key, timeout=600)
-        elif model_name in self.models["grok_models"]:
-            client = openai.OpenAI(api_key=self.api_key, base_url="https://api.x.ai/v1")
-        elif model_name in self.models["gemini_models"]:
-            client = openai.OpenAI(api_key=self.api_key, base_url="https://generativelanguage.googleapis.com/v1beta/openai/")
-        elif model_name in self.models["deepseek_models"]:
-            client = openai.OpenAI(api_key=self.api_key, base_url="https://api.deepseek.com/v1")
-        elif model_name in self.models["alibaba_models"]:
-            client = openai.OpenAI(api_key=self.api_key, base_url="https://dashscope-intl.aliyuncs.com/compatible-mode/v1")
-        elif model_name in self.models["inception_models"]:
-            client = openai.OpenAI(api_key=self.api_key, base_url="https://api.inceptionlabs.ai/v1")
-        elif model_name in self.models["openai_models"]:
-            client = openai.OpenAI(api_key=self.api_key)
+            params["timeout"] = 600
+            client = anthropic.Anthropic(**params)
+        elif model_name not in self.models["mistral_models"] and model_name not in self.models["anthropic_models"]:
+            client = openai.OpenAI(**params)
         else:
             raise ValueError(f"Model '{model_name}' not found.")
 

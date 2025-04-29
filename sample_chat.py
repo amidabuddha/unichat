@@ -253,8 +253,7 @@ def main():
                     response_stream = client.chat.completions.create(
                         model=model_name,
                         messages=conversation,
-                        tools=tools,
-                        reasoning_effort = "medium"
+                        tools=tools
                     )
                     handle_streaming_response(response_stream, conversation)
                 else:
@@ -262,8 +261,7 @@ def main():
                         model=model_name,
                         messages=conversation,
                         tools=tools,
-                        stream=False,
-                        reasoning_effort = "medium"
+                        stream=False
                     )
                     handle_non_streaming_response(response, conversation)
 

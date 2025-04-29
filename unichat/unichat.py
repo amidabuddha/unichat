@@ -5,9 +5,10 @@ from .chat_helper import _ChatHelper
 
 
 class UnifiedChatApi:
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str, base_url: Optional[str]=None):
         self.api_key = api_key
-        self._api_helper = _ApiHelper(api_key=api_key)
+        self.base_url = base_url
+        self._api_helper = _ApiHelper(api_key=api_key, base_url=base_url)
         self.chat = self.Chat(self)
 
     class Chat:
