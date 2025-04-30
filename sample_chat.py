@@ -9,8 +9,8 @@ def validate_inputs(api_key: str, model_name: str) -> None:
     """Validate the API key and model name."""
     if not api_key:
         raise ValueError("API key cannot be empty")
-    if not any(model_name in models_list for models_list in unichat.MODELS_LIST.values()):
-        raise ValueError(f"Unsupported model: {model_name}")
+    if not model_name:
+        raise ValueError("Please enter a model name")
 
 
 def get_calculation(tool_call):

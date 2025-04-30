@@ -86,14 +86,7 @@ class _ChatHelper:
 
                 response = self.client.messages.create(**anthropic_params)
 
-            elif self.model_name in (
-                self.api_helper.models["gemini_models"]
-                + self.api_helper.models["grok_models"]
-                + self.api_helper.models["openai_models"]
-                + self.api_helper.models["deepseek_models"]
-                + self.api_helper.models["alibaba_models"]
-                + self.api_helper.models["inception_models"]
-            ):
+            else:
                 params = {
                     "model": self.model_name,
                     "messages": self.messages,
@@ -107,9 +100,6 @@ class _ChatHelper:
                     params["reasoning_effort"] = self.reasoning_effort
 
                 response = self.client.chat.completions.create(**params)
-
-            else:
-                raise ValueError(f"Model {self.model_name} is currently not supported")
 
             return response
 

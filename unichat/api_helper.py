@@ -38,10 +38,8 @@ class _ApiHelper:
             # To suppress the streaming error, cause they flag even "hi" as a long request, because of max_tokens.
             params["timeout"] = 600
             client = anthropic.Anthropic(**params)
-        elif model_name not in self.models["mistral_models"] and model_name not in self.models["anthropic_models"]:
-            client = openai.OpenAI(**params)
         else:
-            raise ValueError(f"Model '{model_name}' not found.")
+            client = openai.OpenAI(**params)
 
         self.api_client = client
         return client
