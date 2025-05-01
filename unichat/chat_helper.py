@@ -94,7 +94,7 @@ class _ChatHelper:
                 }
                 if self.model_name not in ("o1", "o3-mini", "o3", "o4-mini") and not self.model_name.endswith("reasoner") and not self.model_name.startswith("mercury"):
                     params["temperature"] = self.temperature
-                if self.tools and self.model_name not in ("o1-preview", "o1-mini") and not self.model_name.endswith("reasoner"):
+                if self.tools and not self.model_name.endswith("reasoner"):
                     params["tools"] = self.api_helper.transform_tools(self.tools)
                 if self.reasoning_effort:
                     params["reasoning_effort"] = self.reasoning_effort
