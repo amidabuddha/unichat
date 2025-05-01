@@ -19,8 +19,6 @@ MODELS_LIST =  {
         "gpt-4o-2024-11-20",
         "chatgpt-4o-latest",
         "gpt-4.1",
-        "o1-mini",
-        "o1-preview",
         "o1",
         "o3-mini",
         "o3",
@@ -49,8 +47,7 @@ MODELS_LIST =  {
         "qwq-plus"
     ],
     "inception_models": [
-        "mercury-coder-small",
-        "mercury-coder-mini"
+        "mercury-coder-small"
     ]
 }
 MODELS_MAX_TOKEN =  {
@@ -61,8 +58,6 @@ MODELS_MAX_TOKEN =  {
     "gpt-4o-2024-11-20": 16384,
     "chatgpt-4o-latest": 16384,
     "gpt-4.1": 32768,
-    "o1-mini": 65536,
-    "o1-preview": 32768,
     "o1": 100000,
     "o3-mini": 100000,
     "o3": 100000,
@@ -88,7 +83,7 @@ MODELS_MAX_TOKEN =  {
     "qwen-turbo-latest": 8192,
     "qwen-plus-latest": 8192,
     "qwen-max-latest": 8192,
+    "qvq-max-latest": 8192,
     "qwq-plus": 8192,
-    "mercury-coder-small": 32000,
-    "mercury-coder-mini": 32000
+    "mercury-coder-small": 32000
 }
