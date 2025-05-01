@@ -44,6 +44,7 @@ MODELS_LIST =  {
         "qwen-turbo-latest",
         "qwen-plus-latest",
         "qwen-max-latest",
+        "qvq-max",
         "qwq-plus"
     ],
     "inception_models": [
@@ -83,7 +84,7 @@ MODELS_MAX_TOKEN =  {
     "qwen-turbo-latest": 8192,
     "qwen-plus-latest": 8192,
     "qwen-max-latest": 8192,
-    "qvq-max-latest": 8192,
+    "qvq-max": 8192,
     "qwq-plus": 8192,
     "mercury-coder-small": 32000
 }
