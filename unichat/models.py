@@ -7,6 +7,7 @@ MODELS_LIST =  {
     ],
     "mistral_models": [
         "mistral-saba-latest",
+        "mistral-medium-latest",
         "mistral-large-latest",
         "codestral-latest",
         "pixtral-large-latest"
@@ -68,6 +69,7 @@ MODELS_MAX_TOKEN =  {
     "o3": 100000,
     "o4-mini": 100000,
     "mistral-saba-latest": 32000,
+    "mistral-medium-latest": 128000,
     "mistral-large-latest": 128000,
     "codestral-latest": 256000,
     "pixtral-large-latest": 128000,
