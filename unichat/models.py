@@ -34,9 +34,8 @@ MODELS_LIST =  {
         "grok-2-vision-latest"
     ],
     "gemini_models": [
-        "gemini-2.5-flash-preview-04-17",
-        "gemini-2.5-pro-exp-03-25",
-        "gemini-2.5-pro-preview-03-25"
+        "gemini-2.5-flash-preview-05-20",
+        "gemini-2.5-pro-preview-05-06"
     ],
     "deepseek_models": [
         "deepseek-chat",
@@ -82,9 +81,8 @@ MODELS_MAX_TOKEN =  {
     "grok-3-mini-latest": 131072,
     "grok-3-mini-fast-latest": 131072,
     "grok-2-vision-latest": 32768,
-    "gemini-2.5-flash-preview-04-17": 65536,
-    "gemini-2.5-pro-exp-03-25": 8192,
-    "gemini-2.5-pro-preview-03-25": 8192,
+    "gemini-2.5-flash-preview-05-20": 65536,
+    "gemini-2.5-pro-preview-05-06": 8192,
     "deepseek-chat": 8192,
     "deepseek-reasoner": 8192,
     "qwen-turbo-latest": 8192,
