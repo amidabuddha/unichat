@@ -3,7 +3,8 @@ MODELS_LIST =  {
         "claude-3-5-haiku-latest",
         "claude-3-5-sonnet-latest",
         "claude-3-7-sonnet-latest",
-        "claude-3-opus-latest"
+        "claude-sonnet-4-0",
+        "claude-opus-4-0"
     ],
     "mistral_models": [
         "mistral-saba-latest",
@@ -73,9 +74,10 @@ MODELS_MAX_TOKEN =  {
     "codestral-latest": 256000,
     "pixtral-large-latest": 128000,
     "claude-3-5-haiku-latest": 8192,
-    "claude-3-5-sonnet-latest": 8192,
+    "claude-3-5-sonnet-latest": 64000,
     "claude-3-7-sonnet-latest": 64000,
-    "claude-3-opus-latest": 4096,
+    "claude-sonnet-4-0": 64000,
+    "claude-opus-4-0": 4096,
     "grok-3-latest": 131072,
     "grok-3-fast-latest": 131072,
     "grok-3-mini-latest": 131072,
