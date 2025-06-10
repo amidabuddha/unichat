@@ -73,6 +73,7 @@ MODELS_MAX_TOKEN =  {
     "mistral-large-latest": 128000,
     "codestral-latest": 256000,
     "pixtral-large-latest": 128000,
+    "magistral-medium-latest": 40000,
     "claude-3-5-haiku-latest": 8192,
     "claude-3-5-sonnet-latest": 8192,
     "claude-3-7-sonnet-latest": 64000,
