@@ -11,7 +11,8 @@ MODELS_LIST =  {
         "mistral-medium-latest",
         "mistral-large-latest",
         "codestral-latest",
-        "pixtral-large-latest"
+        "pixtral-large-latest",
+        "magistral-medium-latest"
     ],
     "openai_models": [
         "gpt-4.1-nano",
@@ -25,6 +26,7 @@ MODELS_LIST =  {
         "o1-pro",
         "o3-mini",
         "o3",
+        "o3-pro",
         "o4-mini"
     ],
     "grok_models": [
@@ -67,6 +69,7 @@ MODELS_MAX_TOKEN =  {
     "o1-pro": 100000,
     "o3-mini": 100000,
     "o3": 100000,
+    "o3-pro": 100000,
     "o4-mini": 100000,
     "mistral-saba-latest": 32000,
     "mistral-medium-latest": 128000,
