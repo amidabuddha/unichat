@@ -84,7 +84,7 @@ MODELS_MAX_TOKEN =  {
     "grok-3-mini-fast-latest": 131072,
     "grok-2-vision-latest": 32768,
     "gemini-2.5-flash": 65536,
-    "gemini-2.5-pro": 8192,
+    "gemini-2.5-pro": 65536,
     "deepseek-chat": 8192,
     "deepseek-reasoner": 8192,
     "qwen-turbo-latest": 8192,
