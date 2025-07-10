@@ -28,6 +28,7 @@ MODELS_LIST =  {
         "o4-mini"
     ],
     "grok_models": [
+        "grok-4-latest",
         "grok-3-latest",
         "grok-3-fast-latest",
         "grok-3-mini-latest",
@@ -78,6 +79,7 @@ MODELS_MAX_TOKEN =  {
     "claude-3-7-sonnet-latest": 64000,
     "claude-sonnet-4-0": 64000,
     "claude-opus-4-0": 32000,
+    "grok-4-latest": 256000,
     "grok-3-latest": 131072,
     "grok-3-fast-latest": 131072,
     "grok-3-mini-latest": 131072,
