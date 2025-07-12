@@ -56,7 +56,7 @@ MODELS_LIST =  {
         "mercury-coder-small"
     ],
     "moonshot_models": [
-        "kimi-k2-0711-preview",
+        "kimi-latest",
         "kimi-k2-0711-preview",
         "kimi-thinking-preview"
     ]
@@ -102,6 +102,7 @@ MODELS_MAX_TOKEN =  {
     "qwen-vl-max": 2048,
     "qwen-vl-plus": 2048,
     "mercury-coder-small": 32000,
+    "kimi-latest": 131072,
     "kimi-k2-0711-preview": 131072,
     "kimi-thinking-preview": 131072
 }
