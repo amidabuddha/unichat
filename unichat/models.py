@@ -96,5 +96,6 @@ MODELS_MAX_TOKEN =  {
     "qvq-max": 8192,
     "qwen-vl-max": 2048,
     "qwen-vl-plus": 2048,
-    "mercury-coder-small": 32000
+    "mercury-coder-small": 32000,
+    "kimi-k2-0711-preview": 131072
 }
