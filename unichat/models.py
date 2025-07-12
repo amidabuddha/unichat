@@ -54,6 +54,9 @@ MODELS_LIST =  {
     ],
     "inception_models": [
         "mercury-coder-small"
+    ],
+    "moonshot_models": [
+        "kimi-k2-0711-preview"
     ]
 }
 MODELS_MAX_TOKEN =  {
