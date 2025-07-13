@@ -53,7 +53,8 @@ MODELS_LIST =  {
         "qwen-vl-plus"
     ],
     "inception_models": [
-        "mercury-coder-small"
+        "mercury",
+        "mercury-coder"
     ],
     "moonshot_models": [
         "kimi-latest",
@@ -101,7 +102,8 @@ MODELS_MAX_TOKEN =  {
     "qvq-max": 8192,
     "qwen-vl-max": 2048,
     "qwen-vl-plus": 2048,
-    "mercury-coder-small": 32000,
+    "mercury": 32000,
+    "mercury-coder": 32000,
     "kimi-latest": 131072,
     "kimi-k2-0711-preview": 131072,
     "kimi-thinking-preview": 131072
