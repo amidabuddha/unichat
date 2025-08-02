@@ -59,7 +59,11 @@ MODELS_LIST =  {
     "moonshot_models": [
         "kimi-latest",
         "kimi-k2-0711-preview",
+        "kimi-k2-turbo-preview",
         "kimi-thinking-preview"
+    ],
+    "openrouter_models": [
+        "openrouter/horizon-beta"
     ]
 }
 MODELS_MAX_TOKEN =  {
@@ -102,9 +106,11 @@ MODELS_MAX_TOKEN =  {
     "qvq-max": 8192,
     "qwen-vl-max": 2048,
     "qwen-vl-plus": 2048,
-    "mercury": 32000,
-    "mercury-coder": 32000,
+    "mercury": 128000,
+    "mercury-coder": 128000,
     "kimi-latest": 131072,
     "kimi-k2-0711-preview": 131072,
-    "kimi-thinking-preview": 131072
+    "kimi-k2-turbo-preview": 131072,
+    "kimi-thinking-preview": 131072,
+    "openrouter/horizon-beta": 256000
 }
