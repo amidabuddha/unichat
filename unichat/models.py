@@ -26,7 +26,11 @@ MODELS_LIST =  {
         "o3-mini",
         "o3",
         "o3-pro",
-        "o4-mini"
+        "o4-mini",
+        "gpt-5-nano",
+        "gpt-5-mini",
+        "gpt-5",
+        "gpt-5-chat-latest"
     ],
     "grok_models": [
         "grok-4-latest",
@@ -82,6 +86,10 @@ MODELS_MAX_TOKEN =  {
     "o3": 200000,
     "o3-pro": 200000,
     "o4-mini": 200000,
+    "gpt-5-nano": 400000,
+    "gpt-5-mini": 400000,
+    "gpt-5": 400000,
+    "gpt-5-chat-latest": 400000,
     "mistral-small-latest": 128000,
     "mistral-medium-latest": 128000,
     "mistral-large-latest": 128000,
