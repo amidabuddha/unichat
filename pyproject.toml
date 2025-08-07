@@ -15,7 +15,7 @@ license = "MIT"
 dependencies = [
     "anthropic~=0.61.0",
     "mistralai~=1.9.3",
-    "openai~=1.99.0",
+    "openai~=1.99.2",
 ]
 
 [project.urls]
