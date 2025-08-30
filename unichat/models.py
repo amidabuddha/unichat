@@ -33,12 +33,10 @@ MODELS_LIST =  {
         "gpt-5-chat-latest"
     ],
     "grok_models": [
+        "grok-code-fast",
         "grok-4-latest",
         "grok-3-latest",
-        "grok-3-fast-latest",
-        "grok-3-mini-latest",
-        "grok-3-mini-fast-latest",
-        "grok-2-vision-latest"
+        "grok-3-mini-latest"
     ],
     "gemini_models": [
         "gemini-2.5-flash",
@@ -102,12 +100,10 @@ MODELS_MAX_TOKEN =  {
     "claude-sonnet-4-0": 64000,
     "claude-opus-4-0": 32000,
     "claude-opus-4-1": 32000,
+    "grok-code-fast": 256000,
     "grok-4-latest": 256000,
     "grok-3-latest": 131072,
-    "grok-3-fast-latest": 131072,
     "grok-3-mini-latest": 131072,
-    "grok-3-mini-fast-latest": 131072,
-    "grok-2-vision-latest": 32768,
     "gemini-2.5-flash": 1048576,
     "gemini-2.5-pro": 1048576,
     "deepseek-chat": 64000,
