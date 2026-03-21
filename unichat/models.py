@@ -4,21 +4,10 @@ MODELS_LIST =  {
         "claude-sonnet-4-6",
         "claude-opus-4-6"
     ],
-    "mistral_models": [],
     "openai_models": [
         "gpt-5.4-nano",
         "gpt-5.4-mini",
         "gpt-5.4"
-    ],
-    "grok_models": [
-        "grok-4.20-reasoning-latest",
-        "grok-4.20-non-reasoning-latest",
-        "grok-4.20-multi-agent"
-    ],
-    "gemini_models": [
-        "gemini-3.1-flash-lite-preview",
-        "gemini-3-flash-preview",
-        "gemini-3.1-pro-preview"
     ]
 }
 MODELS_MAX_TOKEN =  {
@@ -28,9 +17,6 @@ MODELS_MAX_TOKEN =  {
     "claude-haiku-4-5": 64000,
     "claude-sonnet-4-6": 64000,
     "claude-opus-4-6": 128000,
-    "grok-4.20-reasoning-latest": 2000000,
-    "grok-4.20-non-reasoning-latest": 2000000,
-    "grok-4.20-multi-agent": 2000000,
     "gemini-3.1-flash-lite-preview": 1048576,
     "gemini-3-flash-preview": 1048576,
     "gemini-3.1-pro-preview": 1048576
