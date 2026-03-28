@@ -110,6 +110,10 @@ def handle_streaming_response(response_stream, conversation):
                         current_assistant_message['tool_calls'][last_tool_call_index]['function']['arguments'] += tool_call.function.arguments
 
         if finish_reason:
+            if finish_reason == "refusal":
+                print("\n[Notice] Model returned a refusal. Consider adjusting the request or guardrail handling.")
+            elif finish_reason == "model_context_window_exceeded":
+                print("\n[Notice] Model hit its context window limit. Consider trimming conversation history.")
             conversation.append(current_assistant_message)
 
             # Process tool calls
@@ -133,6 +137,12 @@ def handle_non_streaming_response(response, conversation):
     }
 
     message = response.choices[0].message
+    finish_reason = response.choices[0].finish_reason
+
+    if finish_reason == "refusal":
+        print("\n[Notice] Model returned a refusal. Consider adjusting the request or guardrail handling.")
+    elif finish_reason == "model_context_window_exceeded":
+        print("\n[Notice] Model hit its context window limit. Consider trimming conversation history.")
 
     # Safely get tool_calls
     tool_calls = getattr(message, 'tool_calls', None)

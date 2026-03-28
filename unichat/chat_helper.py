@@ -70,11 +70,17 @@ class _ChatHelper:
 
                 match self.reasoning_effort:
                     case "high":
-                        anthropic_params["thinking"] = {"type": "enabled", "budget_tokens": int(anthropic_params["max_tokens"]*0.8)}
+                        anthropic_params["thinking"] = {"type": "adaptive"}
+                        anthropic_params["output_config"] = {"effort": "high"}
                     case "medium":
-                        anthropic_params["thinking"] = {"type": "enabled", "budget_tokens": int(anthropic_params["max_tokens"]*0.5)}
+                        anthropic_params["thinking"] = {"type": "adaptive"}
+                        anthropic_params["output_config"] = {"effort": "medium"}
                     case "low":
-                        anthropic_params["thinking"] = {"type": "enabled", "budget_tokens": int(anthropic_params["max_tokens"]*0.2)}
+                        anthropic_params["thinking"] = {"type": "adaptive"}
+                        anthropic_params["output_config"] = {"effort": "low"}
+                    case "max":
+                        anthropic_params["thinking"] = {"type": "adaptive"}
+                        anthropic_params["output_config"] = {"effort": "max"}
                     case "none":
                         pass
                     case False:
