@@ -17,8 +17,13 @@ MODELS_LIST =  {
         "gpt-5.4-mini",
         "gpt-5.4"
     ],
-    "grok_models": [],
-    "gemini_models": [
+    "xai_models": [
+        "grok-4.20-0309-non-reasoning",
+        "grok-4.20-reasoning-latest",
+        "grok-4-1-fast-non-reasoning-latest",
+        "grok-4-1-fast-reasoning-latest"
+    ],
+    "google_models": [
         "gemini-3.1-flash-lite-preview",
         "gemini-3-flash-preview",
         "gemini-3.1-pro-preview"
@@ -39,5 +44,9 @@ MODELS_MAX_TOKEN =  {
     "mistral-large-latest": 128000,
     "codestral-latest": 256000,
     "pixtral-large-latest": 128000,
-    "magistral-medium-latest": 40000
+    "magistral-medium-latest": 40000,
+    "grok-4.20-0309-non-reasoning": 2000000,
+    "grok-4.20-reasoning-latest": 2000000,
+    "grok-4-1-fast-non-reasoning-latest": 2000000,
+    "grok-4-1-fast-reasoning-latest": 2000000
 }
