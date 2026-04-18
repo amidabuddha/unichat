@@ -565,14 +565,26 @@ class _ApiHelper:
                 user_messages += 1
             # Add tool result user mesasge to cache
             elif (message["role"] == "user" and user_messages < 2 and (isinstance(message.get("content"), list) and message["content"] and isinstance(message["content"][0], dict))):
+                cached_content = [dict(block) if isinstance(block, dict) else block for block in message["content"]]
+
+                def _is_cache_eligible_block(block):
+                    if not isinstance(block, dict):
+                        return False
+
+                    block_type = block.get("type")
+                    if block_type == "text":
+                        return bool(block.get("text"))
+
+                    return block_type in {"image", "document", "tool_result", "tool_use"}
+
+                for idx in range(len(cached_content) - 1, -1, -1):
+                    if _is_cache_eligible_block(cached_content[idx]):
+                        cached_content[idx]["cache_control"] = {"type": "ephemeral"}
+                        break
+
                 result.append({
                     "role": "user",
-                    "content": [
-                        {
-                        **message["content"][0],
-                        "cache_control": {"type": "ephemeral"}
-                        }
-                    ]
+                    "content": cached_content
                 })
                 user_messages += 1
             else:

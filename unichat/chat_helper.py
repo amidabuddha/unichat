@@ -52,9 +52,12 @@ class _ChatHelper:
                 anthropic_params = {
                     "model": self.model_name,
                     "max_tokens": self.api_helper._get_max_tokens(self.model_name),
-                    "temperature": 1 if self.reasoning_effort else min(self.temperature, 1),
                     "stream": self.stream,
                 }
+
+                # Claude Opus 4.7 rejects non-default sampling params; omit temperature entirely.
+                if self.model_name != "claude-opus-4-7":
+                    anthropic_params["temperature"] = 1 if self.reasoning_effort else min(self.temperature, 1)
 
                 if self.tools:
                     self.tools[-1].update({"cache_control": {"type": "ephemeral"}})
@@ -69,18 +72,21 @@ class _ChatHelper:
                     ]
 
                 match self.reasoning_effort:
+                    case "max":
+                        anthropic_params["thinking"] = {"type": "adaptive", "display": "summarized"}
+                        anthropic_params["output_config"] = {"effort": "max"}
+                    case "xhigh":
+                        anthropic_params["thinking"] = {"type": "adaptive", "display": "summarized"}
+                        anthropic_params["output_config"] = {"effort": "xhigh"}
                     case "high":
-                        anthropic_params["thinking"] = {"type": "adaptive"}
+                        anthropic_params["thinking"] = {"type": "adaptive", "display": "summarized"}
                         anthropic_params["output_config"] = {"effort": "high"}
                     case "medium":
-                        anthropic_params["thinking"] = {"type": "adaptive"}
+                        anthropic_params["thinking"] = {"type": "adaptive", "display": "summarized"}
                         anthropic_params["output_config"] = {"effort": "medium"}
                     case "low":
-                        anthropic_params["thinking"] = {"type": "adaptive"}
+                        anthropic_params["thinking"] = {"type": "adaptive", "display": "summarized"}
                         anthropic_params["output_config"] = {"effort": "low"}
-                    case "max":
-                        anthropic_params["thinking"] = {"type": "adaptive"}
-                        anthropic_params["output_config"] = {"effort": "max"}
                     case "none":
                         pass
                     case False:
