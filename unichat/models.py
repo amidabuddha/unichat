@@ -5,14 +5,7 @@ MODELS_LIST =  {
         "claude-opus-4-6",
         "claude-opus-4-7"
     ],
-    "mistral_models": [
-        "mistral-small-latest",
-        "mistral-medium-latest",
-        "mistral-large-latest",
-        "codestral-latest",
-        "pixtral-large-latest",
-        "magistral-medium-latest"
-    ],
+    "mistral_models": [],
     "openai_models": [
         "gpt-5.4-nano",
         "gpt-5.4-mini",
@@ -40,11 +33,5 @@ MODELS_MAX_TOKEN =  {
     "gemini-3.1-flash-lite-preview": 1048576,
     "gemini-3-flash-preview": 1048576,
     "gemini-3.1-pro-preview": 1048576,
-    "mistral-small-latest": 128000,
-    "mistral-medium-latest": 128000,
-    "mistral-large-latest": 128000,
-    "codestral-latest": 256000,
-    "pixtral-large-latest": 128000,
-    "magistral-medium-latest": 40000,
     "grok-4.3-latest": 1000000
 }
