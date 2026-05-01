@@ -5,7 +5,6 @@ MODELS_LIST =  {
         "claude-opus-4-6",
         "claude-opus-4-7"
     ],
-    "mistral_models": [],
     "openai_models": [
         "gpt-5.4-nano",
         "gpt-5.4-mini",
