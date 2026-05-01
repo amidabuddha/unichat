@@ -4,7 +4,8 @@ from typing import Any, Dict, Generator, Iterator, List, Optional
 
 import anthropic
 import openai
-from mistralai import Mistral
+# MistralAI support is commented out because mistralai is not an active dependency.
+# from mistralai import Mistral
 
 from .models import MODELS_LIST, MODELS_MAX_TOKEN
 
@@ -31,9 +32,10 @@ class _ApiHelper:
         if self.base_url:
             params["base_url"] = self.base_url
 
-        if model_name in self.models["mistral_models"]:
-            client = Mistral(**params)
-        elif model_name in self.models["anthropic_models"]:
+        # MistralAI client creation is commented out because mistralai is not an active dependency.
+        # if model_name in self.models["mistral_models"]:
+        #     client = Mistral(**params)
+        if model_name in self.models["anthropic_models"]:
             # Timeout added as per https://github.com/anthropics/anthropic-sdk-python#long-requests
             # To suppress the streaming error, cause they flag even "hi" as a long request, because of max_tokens.
             params["timeout"] = 600
@@ -267,45 +269,46 @@ class _ApiHelper:
         })
 
 
-    def transform_response(self, response: object) -> object:
-        """Transform API response to standard format."""
-        if not isinstance(response, object):
-            return type('obj', (object,), {})
-
-        usage = getattr(response, "usage", {})
-        transformed = type('obj', (object,), {
-            **response.__dict__,
-            "usage": type('obj', (object,), {
-                "prompt_tokens": getattr(usage, "promptTokens", 0),
-                "completion_tokens": getattr(usage, "completionTokens", 0),
-                "total_tokens": getattr(usage, "totalTokens", 0)
-            }),
-            "choices": []
-        })
-
-        for choice in getattr(response, "choices", []):
-            if not isinstance(choice, object):
-                continue
-
-            transformed_choice = type('obj', (object,), {
-                **choice.__dict__,
-                "message": type('obj', (object,), {
-                    **getattr(choice, "message", {}).__dict__
-                }),
-                "finish_reason": getattr(choice, "finishReason", None)
-            })
-
-            if hasattr(getattr(choice, "message", {}), "toolCalls"):
-                setattr(transformed_choice.message, "tool_calls", [
-                    type('obj', (object,), {**tool_call.__dict__})
-                    for tool_call in getattr(choice.message, "toolCalls")
-                ])
-                if hasattr(transformed_choice.message, "toolCalls"):
-                    delattr(transformed_choice.message, "toolCalls")
-
-            transformed.choices.append(transformed_choice)
-
-        return transformed
+    # MistralAI response transformation is commented out because it is only used by commented MistralAI code.
+    # def transform_response(self, response: object) -> object:
+    #     """Transform API response to standard format."""
+    #     if not isinstance(response, object):
+    #         return type('obj', (object,), {})
+    #
+    #     usage = getattr(response, "usage", {})
+    #     transformed = type('obj', (object,), {
+    #         **response.__dict__,
+    #         "usage": type('obj', (object,), {
+    #             "prompt_tokens": getattr(usage, "promptTokens", 0),
+    #             "completion_tokens": getattr(usage, "completionTokens", 0),
+    #             "total_tokens": getattr(usage, "totalTokens", 0)
+    #         }),
+    #         "choices": []
+    #     })
+    #
+    #     for choice in getattr(response, "choices", []):
+    #         if not isinstance(choice, object):
+    #             continue
+    #
+    #         transformed_choice = type('obj', (object,), {
+    #             **choice.__dict__,
+    #             "message": type('obj', (object,), {
+    #                 **getattr(choice, "message", {}).__dict__
+    #             }),
+    #             "finish_reason": getattr(choice, "finishReason", None)
+    #         })
+    #
+    #         if hasattr(getattr(choice, "message", {}), "toolCalls"):
+    #             setattr(transformed_choice.message, "tool_calls", [
+    #                 type('obj', (object,), {**tool_call.__dict__})
+    #                 for tool_call in getattr(choice.message, "toolCalls")
+    #             ])
+    #             if hasattr(transformed_choice.message, "toolCalls"):
+    #                 delattr(transformed_choice.message, "toolCalls")
+    #
+    #         transformed.choices.append(transformed_choice)
+    #
+    #     return transformed
 
     def transform_stream(self, response: object) -> object:
         """Transform Claude's streaming response to OpenAI format and yield both transformed chunk and original block."""
@@ -473,77 +476,78 @@ class _ApiHelper:
                     })
                     yield transformed_chunk, None  # No original block for message_delta
 
-    def transform_stream_chunk(self, stream: Iterator[Any]) -> Generator[object, None, None]:
-        """Transform stream chunks to standard format."""
-        try:
-            for chunk in stream:
-                if not chunk or not hasattr(chunk, 'data'):
-                    continue
-
-                data = getattr(chunk, "data")
-                if not isinstance(data, object):
-                    continue
-
-                # Create transformed chunk without system attributes
-                base_dict = {k: v for k, v in data.__dict__.items()
-                            if not k.startswith('__')}
-                transformed_chunk = type('obj', (object,), base_dict)
-
-                # Transform usage only if present and not None
-                if hasattr(data, "usage") and data.usage is not None:
-                    usage = data.usage
-                    if not isinstance(usage, type('Unset', (), {})):
-                        setattr(transformed_chunk, "usage", type('obj', (object,), {
-                            "prompt_tokens": getattr(usage, "promptTokens", 0),
-                            "completion_tokens": getattr(usage, "completionTokens", 0),
-                            "total_tokens": getattr(usage, "totalTokens", 0)
-                        }))
-                else:
-                    if hasattr(transformed_chunk, "usage"):
-                        delattr(transformed_chunk, "usage")
-
-                # Transform choices
-                if hasattr(data, "choices"):
-                    setattr(transformed_chunk, "choices", [])
-                    for choice in getattr(data, "choices"):
-                        transformed_choice = type('obj', (object,), {
-                            k: v for k, v in choice.__dict__.items()
-                            if not k.startswith('__')
-                        })
-
-                        if hasattr(choice, "delta"):
-                            delta = getattr(choice, "delta")
-                            delta_dict = {k: v for k, v in delta.__dict__.items()
-                                        if not k.startswith('__')}
-                            transformed_delta = type('obj', (object,), delta_dict)
-
-                            if (hasattr(delta, "toolCalls") and
-                                getattr(delta, "toolCalls") is not None and
-                                not isinstance(getattr(delta, "toolCalls"), type('Unset', (), {}))):
-                                tool_calls = getattr(delta, "toolCalls")
-                                setattr(transformed_delta, "tool_calls", [
-                                    type('obj', (object,), {
-                                        k: v for k, v in tool_call.__dict__.items()
-                                        if not k.startswith('__')
-                                    })
-                                    for tool_call in tool_calls
-                                ])
-                                if hasattr(transformed_delta, "toolCalls"):
-                                    delattr(transformed_delta, "toolCalls")
-
-                            setattr(transformed_choice, "delta", transformed_delta)
-
-                        if hasattr(choice, "finishReason"):
-                            setattr(transformed_choice, "finish_reason", getattr(choice, "finishReason"))
-                            if hasattr(transformed_choice, "finishReason"):
-                                delattr(transformed_choice, "finishReason")
-
-                        getattr(transformed_chunk, "choices").append(transformed_choice)
-
-                yield transformed_chunk
-
-        except Exception as e:
-            raise Exception(f"Error processing stream chunk: {e}")
+    # MistralAI stream chunk transformation is commented out because it is only used by commented MistralAI code.
+    # def transform_stream_chunk(self, stream: Iterator[Any]) -> Generator[object, None, None]:
+    #     """Transform stream chunks to standard format."""
+    #     try:
+    #         for chunk in stream:
+    #             if not chunk or not hasattr(chunk, 'data'):
+    #                 continue
+    #
+    #             data = getattr(chunk, "data")
+    #             if not isinstance(data, object):
+    #                 continue
+    #
+    #             # Create transformed chunk without system attributes
+    #             base_dict = {k: v for k, v in data.__dict__.items()
+    #                         if not k.startswith('__')}
+    #             transformed_chunk = type('obj', (object,), base_dict)
+    #
+    #             # Transform usage only if present and not None
+    #             if hasattr(data, "usage") and data.usage is not None:
+    #                 usage = data.usage
+    #                 if not isinstance(usage, type('Unset', (), {})):
+    #                     setattr(transformed_chunk, "usage", type('obj', (object,), {
+    #                         "prompt_tokens": getattr(usage, "promptTokens", 0),
+    #                         "completion_tokens": getattr(usage, "completionTokens", 0),
+    #                         "total_tokens": getattr(usage, "totalTokens", 0)
+    #                     }))
+    #             else:
+    #                 if hasattr(transformed_chunk, "usage"):
+    #                     delattr(transformed_chunk, "usage")
+    #
+    #             # Transform choices
+    #             if hasattr(data, "choices"):
+    #                 setattr(transformed_chunk, "choices", [])
+    #                 for choice in getattr(data, "choices"):
+    #                     transformed_choice = type('obj', (object,), {
+    #                         k: v for k, v in choice.__dict__.items()
+    #                         if not k.startswith('__')
+    #                     })
+    #
+    #                     if hasattr(choice, "delta"):
+    #                         delta = getattr(choice, "delta")
+    #                         delta_dict = {k: v for k, v in delta.__dict__.items()
+    #                                     if not k.startswith('__')}
+    #                         transformed_delta = type('obj', (object,), delta_dict)
+    #
+    #                         if (hasattr(delta, "toolCalls") and
+    #                             getattr(delta, "toolCalls") is not None and
+    #                             not isinstance(getattr(delta, "toolCalls"), type('Unset', (), {}))):
+    #                             tool_calls = getattr(delta, "toolCalls")
+    #                             setattr(transformed_delta, "tool_calls", [
+    #                                 type('obj', (object,), {
+    #                                     k: v for k, v in tool_call.__dict__.items()
+    #                                     if not k.startswith('__')
+    #                                 })
+    #                                 for tool_call in tool_calls
+    #                             ])
+    #                             if hasattr(transformed_delta, "toolCalls"):
+    #                                 delattr(transformed_delta, "toolCalls")
+    #
+    #                         setattr(transformed_choice, "delta", transformed_delta)
+    #
+    #                     if hasattr(choice, "finishReason"):
+    #                         setattr(transformed_choice, "finish_reason", getattr(choice, "finishReason"))
+    #                         if hasattr(transformed_choice, "finishReason"):
+    #                             delattr(transformed_choice, "finishReason")
+    #
+    #                     getattr(transformed_chunk, "choices").append(transformed_choice)
+    #
+    #             yield transformed_chunk
+    #
+    #     except Exception as e:
+    #         raise Exception(f"Error processing stream chunk: {e}")
 
     def cache_messages(self, messages):
         result = []

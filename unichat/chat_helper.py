@@ -32,21 +32,22 @@ class _ChatHelper:
 
     def _get_response(self) -> Any:
         try:
-            if self.model_name in self.api_helper.models["mistral_models"]:
-                mistral_params = {
-                    "model": self.model_name,
-                    "temperature": self.temperature,
-                    "messages": self.messages,
-                }
-                if self.tools:
-                    mistral_params["tools"] = self.api_helper.transform_tools(self.tools)
-
-                if self.stream:
-                    response = self.client.chat.stream(**mistral_params)
-                else:
-                    response = self.client.chat.complete(**mistral_params)
-
-            elif self.model_name in self.api_helper.models["anthropic_models"]:
+            # MistralAI response handling is commented out because mistralai is not an active dependency.
+            # if self.model_name in self.api_helper.models["mistral_models"]:
+            #     mistral_params = {
+            #         "model": self.model_name,
+            #         "temperature": self.temperature,
+            #         "messages": self.messages,
+            #     }
+            #     if self.tools:
+            #         mistral_params["tools"] = self.api_helper.transform_tools(self.tools)
+            #
+            #     if self.stream:
+            #         response = self.client.chat.stream(**mistral_params)
+            #     else:
+            #         response = self.client.chat.complete(**mistral_params)
+            #
+            if self.model_name in self.api_helper.models["anthropic_models"]:
                 anthropic_messages = self.api_helper.transform_messages(self.messages)
                 self.api_helper.anthropic_conversation.append(anthropic_messages[-1])
                 anthropic_params = {
@@ -134,8 +135,9 @@ class _ChatHelper:
                     "content": content_list
                 })
                 return self.api_helper.convert_claude_to_gpt(response)
-            elif self.model_name in self.api_helper.models["mistral_models"]:
-                return self.api_helper.transform_response(response)
+            # MistralAI response transformation is commented out because mistralai is not an active dependency.
+            # elif self.model_name in self.api_helper.models["mistral_models"]:
+            #     return self.api_helper.transform_response(response)
             else:
                 return response
         except Exception as e:
@@ -163,10 +165,11 @@ class _ChatHelper:
                             block["input"] = {}
                 self.api_helper.anthropic_conversation.append(message)
 
-            elif self.model_name in self.api_helper.models["mistral_models"]:
-                for chunk in self.api_helper.transform_stream_chunk(response):
-                    if chunk:
-                        yield chunk
+            # MistralAI stream transformation is commented out because mistralai is not an active dependency.
+            # elif self.model_name in self.api_helper.models["mistral_models"]:
+            #     for chunk in self.api_helper.transform_stream_chunk(response):
+            #         if chunk:
+            #             yield chunk
 
             else:
                 for chunk in response:
