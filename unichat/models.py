@@ -3,7 +3,8 @@ MODELS_LIST =  {
         "claude-haiku-4-5",
         "claude-sonnet-4-6",
         "claude-opus-4-6",
-        "claude-opus-4-7"
+        "claude-opus-4-7",
+        "claude-fable-5"
     ],
     "openai_models": [
         "gpt-5.4-nano",
@@ -29,6 +30,7 @@ MODELS_MAX_TOKEN =  {
     "claude-sonnet-4-6": 64000,
     "claude-opus-4-6": 128000,
     "claude-opus-4-7": 128000,
+    "claude-fable-5": 128000,
     "gemini-3.1-flash-lite-preview": 1048576,
     "gemini-3-flash-preview": 1048576,
     "gemini-3.1-pro-preview": 1048576,
