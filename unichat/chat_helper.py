@@ -57,7 +57,7 @@ class _ChatHelper:
                 }
 
                 # Claude Opus 4.7 rejects non-default sampling params; omit temperature entirely.
-                if self.model_name != "claude-opus-4-7":
+                if self.model_name not in ["claude-opus-4-7", "claude-sonnet-5"]:
                     anthropic_params["temperature"] = 1 if self.reasoning_effort else min(self.temperature, 1)
 
                 if self.tools:
