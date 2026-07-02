@@ -606,7 +606,7 @@ class _ApiHelper:
             }
         elif isinstance(block, anthropic.types.RedactedThinkingBlock):
             return {
-                "data": block.signature,
+                "data": block.data,
                 "type": "redacted_thinking"
             }
         elif isinstance(block, anthropic.types.ToolUseBlock):

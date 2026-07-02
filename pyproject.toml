@@ -13,7 +13,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
 dependencies = [
-    "anthropic>=0.112.0,<1",
+    "anthropic>=0.115.1,<1",
     "openai>=2.44.0,<3",
 ]
 
