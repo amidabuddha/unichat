@@ -1,9 +1,8 @@
 MODELS_LIST =  {
     "anthropic_models": [
         "claude-haiku-4-5",
-        "claude-sonnet-4-6",
-        "claude-opus-4-6",
-        "claude-opus-4-7",
+        "claude-sonnet-5",
+        "claude-opus-4-8",
         "claude-fable-5"
     ],
     "openai_models": [
@@ -27,9 +26,8 @@ MODELS_MAX_TOKEN =  {
     "gpt-5.4": 1050000,
     "gpt-5.5": 1050000,
     "claude-haiku-4-5": 64000,
-    "claude-sonnet-4-6": 64000,
-    "claude-opus-4-6": 128000,
-    "claude-opus-4-7": 128000,
+    "claude-sonnet-5": 128000,
+    "claude-opus-4-8": 128000,
     "claude-fable-5": 128000,
     "gemini-3.1-flash-lite-preview": 1048576,
     "gemini-3-flash-preview": 1048576,
